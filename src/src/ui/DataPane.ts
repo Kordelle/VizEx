@@ -46,6 +46,8 @@ export function initDataPane(): void {
     // Empty pattern — clear highlights
     if (!pattern.raw) {
       highlightLayer.innerHTML = buildHighlightSpans(input, []);
+      highlightLayer.scrollTop = rawInput.scrollTop;
+      highlightLayer.scrollLeft = rawInput.scrollLeft;
       setPatternError(null);
       if (noMatchesIndicator) noMatchesIndicator.textContent = '';
       return;
@@ -55,6 +57,8 @@ export function initDataPane(): void {
 
     if (isPatternError(result)) {
       highlightLayer.innerHTML = buildHighlightSpans(input, []);
+      highlightLayer.scrollTop = rawInput.scrollTop;
+      highlightLayer.scrollLeft = rawInput.scrollLeft;
       setPatternError(result.message);
       if (noMatchesIndicator) noMatchesIndicator.textContent = '';
       return;
@@ -62,6 +66,9 @@ export function initDataPane(): void {
 
     setPatternError(null);
     highlightLayer.innerHTML = buildHighlightSpans(input, result.spans);
+    // Re-sync scroll after innerHTML reset (replaces DOM, resets scrollTop to 0)
+    highlightLayer.scrollTop = rawInput.scrollTop;
+    highlightLayer.scrollLeft = rawInput.scrollLeft;
 
     if (noMatchesIndicator) {
       noMatchesIndicator.textContent = (input && result.spans.length === 0)

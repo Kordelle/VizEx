@@ -157,7 +157,7 @@ html, body {
   padding: 8px;
   white-space: pre-wrap;
   word-break: break-all;
-  overflow: auto;
+  overflow: hidden; /* Never scrolls — scroll position driven by JS sync from textarea */
   pointer-events: none;
   color: transparent; /* Text hidden — only marks are visible */
 }
