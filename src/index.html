@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RegEx DQ Visualizer</title>
+    <link rel="stylesheet" href="/src/styles/palette.css" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <button id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+
+    <div id="app">
+      <!-- LEFT COLUMN: regex pane (top) + data pane (bottom) -->
+      <div id="left-column">
+
+        <!-- TOP PANE: RegexInputPanel -->
+        <section id="regex-pane" aria-label="Regex pattern input">
+          <div class="regex-input-row">
+            <input
+              id="pattern-input"
+              type="text"
+              placeholder="Enter regex pattern…"
+              spellcheck="false"
+              autocomplete="off"
+              aria-label="Regex pattern"
+            />
+            <div class="flag-toggles" role="group" aria-label="Regex flags">
+              <button class="flag-btn" data-flag="i" aria-pressed="false" title="Case-insensitive (i)">i</button>
+              <button class="flag-btn" data-flag="m" aria-pressed="false" title="Multiline (m)">m</button>
+              <button class="flag-btn" data-flag="s" aria-pressed="false" title="Dot-all (s)">s</button>
+            </div>
+          </div>
+          <div class="pattern-error" id="pattern-error" role="alert" aria-live="polite"></div>
+        </section>
+
+        <!-- BOTTOM PANE: DataPane -->
+        <section id="data-pane" aria-label="Raw data input">
+          <div class="perf-warning" id="perf-warning" hidden>
+            ⚠️ Input exceeds 50,000 characters — evaluation may be slow.
+          </div>
+          <div class="no-matches" id="no-matches-indicator" aria-live="polite"></div>
+          <div class="data-editor-wrap">
+            <div class="highlight-layer" id="highlight-layer" aria-hidden="true"></div>
+            <textarea
+              id="raw-input"
+              placeholder="Paste raw data here (log line, CSV row, JSON fragment…)"
+              spellcheck="false"
+              autocomplete="off"
+              aria-label="Raw data input"
+            ></textarea>
+          </div>
+        </section>
+
+      </div><!-- /left-column -->
+
+      <!-- RIGHT SIDEBAR: DQRulesPanel -->
+      <aside id="dq-panel" aria-label="Data quality rules">
+        <div class="dq-panel-header">
+          <span>DQ Rules</span>
+          <span id="rule-count" aria-live="polite"></span>
+        </div>
+
+        <div class="dq-rules-list" id="dq-rules-list" role="list" aria-label="Defined DQ rules">
+          <!-- Rule items injected by DQRulesPanel.ts -->
+        </div>
+
+        <!-- Add Rule Form -->
+        <form class="add-rule-form" id="add-rule-form" aria-label="Add new DQ rule">
+          <input type="text" id="rule-name" placeholder="Rule name" maxlength="100" required aria-label="Rule name" />
+          <input type="text" id="rule-pattern" placeholder="Regex pattern" spellcheck="false" aria-label="Rule pattern" />
+          <div class="form-row">
+            <select id="rule-condition" aria-label="Match condition">
+              <option value="must-match">Must match</option>
+              <option value="must-not-match">Must not match</option>
+              <option value="match-count-equals">Match count equals</option>
+            </select>
+            <input type="number" id="rule-expected-count" placeholder="N" min="0" aria-label="Expected count" style="width:60px;display:none" />
+          </div>
+          <button type="submit" class="btn-primary">+ Add Rule</button>
+        </form>
+
+        <!-- Rule Sets -->
+        <div class="rule-sets-section">
+          <h3>Rule Sets</h3>
+          <div class="save-ruleset-row">
+            <input type="text" id="ruleset-name" placeholder="Rule set name…" maxlength="100" aria-label="Rule set name" />
+            <button id="btn-save-ruleset" type="button">Save</button>
+          </div>
+          <div id="storage-error" class="storage-error" role="alert" aria-live="polite"></div>
+          <div class="saved-sets-list" id="saved-sets-list" role="list" aria-label="Saved rule sets">
+            <!-- Saved set items injected by DQRulesPanel.ts -->
+          </div>
+        </div>
+
+      </aside><!-- /dq-panel -->
+    </div><!-- /app -->
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
