@@ -358,7 +358,7 @@ html, body {
 /* ─── Theme Toggle ────────────────────────────────────────────────────────── */
 #theme-toggle {
   position: fixed;
-  top: 8px;
+  top: 41px;
   right: calc(var(--sidebar-width) + 8px);
   font-size: 11px;
   padding: 3px 8px;
@@ -368,4 +368,94 @@ html, body {
   color: var(--text);
   cursor: pointer;
   z-index: 100;
+}
+
+/* ─── Examples Panel ─────────────────────────────────────────────────────── */
+#examples-panel {
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+
+.examples-details {
+  font-size: 12px;
+}
+
+.examples-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text);
+  user-select: none;
+  list-style: none;
+}
+.examples-summary::-webkit-details-marker { display: none; }
+
+.examples-count {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--text-muted);
+}
+
+.examples-body {
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.example-category {
+  margin-bottom: 4px;
+}
+
+.example-category-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 6px 8px 2px;
+  border-top: 1px solid var(--border-color);
+}
+
+.example-entry {
+  padding: 4px 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+}
+.example-entry:last-child { border-bottom: none; }
+
+.example-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 1px;
+}
+
+.example-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.example-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-use-pattern,
+.btn-use-sample {
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn-use-pattern:hover,
+.btn-use-sample:hover {
+  background: color-mix(in srgb, var(--bg) 70%, var(--text) 30%);
 }

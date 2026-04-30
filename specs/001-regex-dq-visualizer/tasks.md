@@ -218,8 +218,112 @@ T021 → wire in main.ts
 3. Phase 4 → DQ rule badges ✓ — demo/deliver
 4. Phase 5 → saved rule sets ✓ — demo/deliver
 5. Phase 6 → polish + a11y ✓ — final delivery
+6. Phase 7 → example patterns + quick-start presets ✓ — discoverability
 
 ---
+
+## Phase 7: User Story 4 — Example Regex Patterns & Quick-Start Presets (Priority: P2)
+
+**Goal**: Provide a library of named, categorised example patterns that users can load with
+one click. Lowers the barrier to entry — a new user can explore highlighting and DQ rules
+without writing a single regex.
+
+**Scope**: Pure data + minimal UI. No new engine logic. Categories cover the most common
+real-world DQ use cases: identifiers, dates, emails/URLs, numbers, data-quality sentinels,
+and log formats.
+
+### Tests for User Story 4 — Write First, Must Fail Before Implementation ⚠️
+
+- [x] T040 [P] [US4] Write unit tests for `examples.ts` in `tests/unit/examples.test.ts`:
+  - every entry has a non-empty `label`, `pattern`, and `sampleText`
+  - every `pattern` compiles without throwing (valid regex)
+  - every `sampleText` produces ≥1 match against its `pattern`
+  - categories array is non-empty and every category has ≥1 example
+  - no duplicate `id` values across the full flat list
+
+- [x] T041 [P] [US4] Write Playwright e2e test in `tests/e2e/examples.spec.ts`:
+  - examples panel is visible in the sidebar
+  - clicking "Use" for an example loads its `pattern` into `#pattern-input`
+  - clicking "Use sample" for an example loads its `sampleText` into `#raw-input`
+  - highlights update within 300ms of loading an example
+  - at least 5 categories are rendered
+
+**Verify**: `npm run test:run` — T040 must **fail** before T042. `npm run test:e2e` — T041 must **fail** before T043.
+
+### Implementation for User Story 4
+
+- [x] T042 [US4] Create `src/examples/examples.ts`: export `EXAMPLE_CATEGORIES: ExampleCategory[]` and
+  flat `ALL_EXAMPLES: ExampleEntry[]`. Each `ExampleEntry` has:
+  `id`, `label`, `description`, `pattern`, `flags` (partial `RegexFlags`), `sampleText`, `dqRules?` (optional pre-wired `DQRule[]`).
+  Include ≥5 categories with ≥3 examples each — see example list below.
+
+- [x] T043 [US4] Add `ExamplesPanel.ts` in `src/ui/`: collapsible `<details>` panel rendered
+  inside `#dq-panel` below the add-rule form. Renders categories as `<optgroup>`-style sections;
+  each entry shows label, description, and two buttons: **"↗ Pattern"** (dispatch `PATTERN_CHANGE`)
+  and **"↗ Sample"** (dispatch `INPUT_CHANGE`).
+
+- [x] T044 [US4] Wire `initExamplesPanel()` in `main.ts`.
+
+- [x] T045 [US4] Add `ExamplesPanel` integration to `index.html`: `<div id="examples-panel"></div>`
+  below `#add-rule-form` in the right sidebar.
+
+**Checkpoint**: Examples panel renders in sidebar. Clicking any entry populates pattern and/or
+sample text. All T040–T041 tests pass.
+
+---
+
+### Example Pattern Library (reference for T042)
+
+#### Category: Identifiers
+| id | Label | Pattern | Sample |
+|---|---|---|---|
+| `id-email` | Email address | `[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}` | `user@example.com, bad@, admin@corp.org` |
+| `id-uuid` | UUID v4 | `[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}` | `550e8400-e29b-41d4-a716-446655440000` |
+| `id-ssn` | US SSN | `\d{3}-\d{2}-\d{4}` | `123-45-6789, 000-00-0000` |
+| `id-phone-us` | US phone | `\(?\d{3}\)?[\s\-]\d{3}[\s\-]\d{4}` | `(555) 123-4567, 800-555-0100` |
+| `id-ip4` | IPv4 address | `\b(?:\d{1,3}\.){3}\d{1,3}\b` | `192.168.1.1, 10.0.0.255, 999.999.999.999` |
+
+#### Category: Dates & Times
+| id | Label | Pattern | Sample |
+|---|---|---|---|
+| `dt-iso8601` | ISO 8601 datetime | `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?` | `2024-01-15T09:30:00Z` |
+| `dt-us` | US date (MM/DD/YYYY) | `\b(0?[1-9]\|1[0-2])\/(0?[1-9]\|[12]\d\|3[01])\/\d{4}\b` | `01/15/2024, 12/31/1999` |
+| `dt-iso-date` | ISO date only (YYYY-MM-DD) | `\b\d{4}-(0[1-9]\|1[0-2])-(0[1-9]\|[12]\d\|3[01])\b` | `2024-01-15, 1999-12-31` |
+| `dt-time24` | 24-hour time | `\b([01]\d\|2[0-3]):[0-5]\d(:[0-5]\d)?\b` | `09:30, 23:59:59` |
+
+#### Category: Numbers & Currency
+| id | Label | Pattern | Sample |
+|---|---|---|---|
+| `num-integer` | Integer (pos/neg) | `-?\d+` | `42, -7, 0, 1000000` |
+| `num-decimal` | Decimal number | `-?\d+\.\d+` | `3.14, -0.5, 100.00` |
+| `num-currency-usd` | USD currency | `\$\s?\d{1,3}(?:,\d{3})*(?:\.\d{2})?` | `$1,234.56, $99, $ 0.99` |
+| `num-percent` | Percentage | `\d+(?:\.\d+)?%` | `99%, 3.5%, 100%` |
+| `num-scientific` | Scientific notation | `-?\d+(?:\.\d+)?[eE][+\-]?\d+` | `1.5e10, -3.2E-4` |
+
+#### Category: Web & Network
+| id | Label | Pattern | Sample |
+|---|---|---|---|
+| `web-url` | URL (http/https) | `https?:\/\/[^\s<>"{}|\\^`[\]]+` | `https://example.com/path?q=1` |
+| `web-ip6` | IPv6 address | `([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}` | `2001:0db8:85a3:0000:0000:8a2e:0370:7334` |
+| `web-mac` | MAC address | `([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}` | `00:1A:2B:3C:4D:5E` |
+| `web-html-tag` | HTML tag | `<[^>]+>` | `<div class="x">, <br/>, </p>` |
+
+#### Category: Data Quality Sentinels
+| id | Label | Pattern | Sample |
+|---|---|---|---|
+| `dq-null-literal` | NULL / null literal | `\bNULL\b\|\bnull\b\|\bNone\b\|\bNA\b\|\bN\/A\b` | `NULL, null, None, NA, N/A` |
+| `dq-whitespace-only` | Whitespace-only field | `^\s+$` | `   , \t\t` |
+| `dq-leading-trailing-ws` | Leading/trailing whitespace | `^\s+\|\s+$` | `  hello , world  ` |
+| `dq-repeated-delimiter` | Repeated CSV delimiter | `,,+\|;;\+` | `a,,b,,,c` |
+| `dq-control-chars` | Control characters (non-printable) | `[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]` | Paste a string with embedded NUL or BEL |
+
+#### Category: Log Formats
+| id | Label | Pattern | Sample |
+|---|---|---|---|
+| `log-level` | Log level keyword | `\b(DEBUG\|INFO\|WARN\|ERROR\|FATAL\|TRACE)\b` | `2024-01-15 ERROR failed to connect` |
+| `log-apache-combined` | Apache combined log | `^(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) (\S+) \S+" (\d{3}) (\d+\|-)` | `127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326` |
+| `log-sap-hana` | SAP HANA trace header | `^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+\]\s+\w+\s+\(\w+\)` | `[2024-01-15 09:30:00.123] INFO (indexserver)` |
+| `log-json-field` | JSON key-value pair | `"(\w+)"\s*:\s*("[^"]*"\|\d+\|true\|false\|null)` | `{"id": 42, "active": true, "name": "Alice"}` |
 
 ## Task Summary
 
@@ -231,7 +335,8 @@ T021 → wire in main.ts
 | Phase 4: US2 (P2) | T022–T027 | T022–T023 | US2 |
 | Phase 5: US3 (P3) | T028–T033 | T028–T029 | US3 |
 | Phase 6: Polish | T034–T039 | T034–T036 | — |
-| **Total** | **39 tasks** | **14 parallelizable** | |
+| Phase 7: Examples | T040–T045 | T040–T041 | US4 |
+| **Total** | **45 tasks** | **16 parallelizable** | |
 
 ---
 
