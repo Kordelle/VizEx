@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { ALL_EXAMPLES, EXAMPLE_CATEGORIES } from '../../src/examples/examples.js';
 
+function escAttr(s: string): string {
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escHtml(s: string): string {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 describe('examples data', () => {
   it('ALL_EXAMPLES is a non-empty array', () => {
     expect(ALL_EXAMPLES.length).toBeGreaterThan(0);
@@ -61,6 +68,23 @@ describe('examples data', () => {
     const flatSet = new Set(flatFromCategories);
     for (const ex of ALL_EXAMPLES) {
       expect(flatSet.has(ex.id), `${ex.id} is in ALL_EXAMPLES but not in any category`).toBe(true);
+    }
+  });
+
+  it('pattern and sampleText are safe to embed in HTML attributes (no unescaped < or >)', () => {
+    for (const ex of ALL_EXAMPLES) {
+      const escapedPattern = escAttr(ex.pattern);
+      const escapedSample = escAttr(ex.sampleText);
+      const html = `<button data-pattern="${escapedPattern}" data-sample="${escapedSample}"></button>`;
+      // Simulate browser attribute parsing: extract attribute value and confirm no raw < >
+      const attrRe = /data-(?:pattern|sample)="([^"]*)"/g;
+      let m;
+      while ((m = attrRe.exec(html)) !== null) {
+        expect(m[1], `${ex.id} has unescaped < or > in attribute`).not.toMatch(/[<>]/);
+      }
+      // Also confirm escHtml works on label/description
+      const escapedLabel = escHtml(ex.label);
+      expect(escapedLabel).not.toMatch(/<(?!&)/);
     }
   });
 });

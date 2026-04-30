@@ -61,40 +61,44 @@
           <span id="rule-count" aria-live="polite"></span>
         </div>
 
-        <div class="dq-rules-list" id="dq-rules-list" role="list" aria-label="Defined DQ rules">
-          <!-- Rule items injected by DQRulesPanel.ts -->
-        </div>
+        <div class="dq-panel-body">
 
-        <!-- Add Rule Form -->
-        <form class="add-rule-form" id="add-rule-form" aria-label="Add new DQ rule">
-          <input type="text" id="rule-name" placeholder="Rule name" maxlength="100" required aria-label="Rule name" />
-          <input type="text" id="rule-pattern" placeholder="Regex pattern" spellcheck="false" aria-label="Rule pattern" />
-          <div class="form-row">
-            <select id="rule-condition" aria-label="Match condition">
-              <option value="must-match">Must match</option>
-              <option value="must-not-match">Must not match</option>
-              <option value="match-count-equals">Match count equals</option>
-            </select>
-            <input type="number" id="rule-expected-count" placeholder="N" min="0" aria-label="Expected count" style="width:60px;display:none" />
+          <div class="dq-rules-list" id="dq-rules-list" role="list" aria-label="Defined DQ rules">
+            <!-- Rule items injected by DQRulesPanel.ts -->
           </div>
-          <button type="submit" class="btn-primary">+ Add Rule</button>
-        </form>
 
-        <!-- Example Patterns Panel -->
-        <div id="examples-panel"></div>
+          <!-- Add Rule Form -->
+          <form class="add-rule-form" id="add-rule-form" aria-label="Add new DQ rule">
+            <input type="text" id="rule-name" placeholder="Rule name" maxlength="100" required aria-label="Rule name" />
+            <input type="text" id="rule-pattern" placeholder="Regex pattern" spellcheck="false" aria-label="Rule pattern" />
+            <div class="form-row">
+              <select id="rule-condition" aria-label="Match condition">
+                <option value="must-match">Must match</option>
+                <option value="must-not-match">Must not match</option>
+                <option value="match-count-equals">Match count equals</option>
+              </select>
+              <input type="number" id="rule-expected-count" placeholder="N" min="0" aria-label="Expected count" style="width:60px;display:none" />
+            </div>
+            <button type="submit" class="btn-primary">+ Add Rule</button>
+          </form>
 
-        <!-- Rule Sets -->
-        <div class="rule-sets-section">
-          <h3>Rule Sets</h3>
-          <div class="save-ruleset-row">
-            <input type="text" id="ruleset-name" placeholder="Rule set name…" maxlength="100" aria-label="Rule set name" />
-            <button id="btn-save-ruleset" type="button">Save</button>
+          <!-- Example Patterns Panel -->
+          <div id="examples-panel"></div>
+
+          <!-- Rule Sets -->
+          <div class="rule-sets-section">
+            <h3>Rule Sets</h3>
+            <div class="save-ruleset-row">
+              <input type="text" id="ruleset-name" placeholder="Rule set name…" maxlength="100" aria-label="Rule set name" />
+              <button id="btn-save-ruleset" type="button">Save</button>
+            </div>
+            <div id="storage-error" class="storage-error" role="alert" aria-live="polite"></div>
+            <div class="saved-sets-list" id="saved-sets-list" role="list" aria-label="Saved rule sets">
+              <!-- Saved set items injected by DQRulesPanel.ts -->
+            </div>
           </div>
-          <div id="storage-error" class="storage-error" role="alert" aria-live="polite"></div>
-          <div class="saved-sets-list" id="saved-sets-list" role="list" aria-label="Saved rule sets">
-            <!-- Saved set items injected by DQRulesPanel.ts -->
-          </div>
-        </div>
+
+        </div><!-- /dq-panel-body -->
 
       </aside><!-- /dq-panel -->
     </div><!-- /app -->

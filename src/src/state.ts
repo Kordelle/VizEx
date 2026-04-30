@@ -122,5 +122,6 @@ export function setStorageError(error: string | null): void {
 }
 
 export function setPatternError(message: string | null): void {
+  if (state.patternErrorMessage === message) return;
   setState({ patternErrorMessage: message });
 }

@@ -203,15 +203,23 @@ html, body {
   border-bottom: 1px solid var(--border-color);
   font-size: 13px;
   font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Scrollable body — everything below the header */
+.dq-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .dq-rules-list {
-  flex: 1;
-  overflow-y: auto;
   padding: 6px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .dq-rule-item {
@@ -373,7 +381,6 @@ html, body {
 /* ─── Examples Panel ─────────────────────────────────────────────────────── */
 #examples-panel {
   border-top: 1px solid var(--border-color);
-  margin-top: 8px;
 }
 
 .examples-details {
