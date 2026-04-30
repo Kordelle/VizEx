@@ -336,7 +336,69 @@ sample text. All T040–T041 tests pass.
 | Phase 5: US3 (P3) | T028–T033 | T028–T029 | US3 |
 | Phase 6: Polish | T034–T039 | T034–T036 | — |
 | Phase 7: Examples | T040–T045 | T040–T041 | US4 |
-| **Total** | **45 tasks** | **16 parallelizable** | |
+| Phase 8: Performance & Render Fidelity | T046–T053 | T046–T047 | — |
+| **Total** | **53 tasks** | **18 parallelizable** | |
+
+---
+
+## Phase 8: Performance & Render Fidelity
+
+**Problem 1 — Highlight misalignment on scroll**: The mirror-div technique requires the
+highlight layer and the input element to render text identically at the pixel level.
+`<textarea>` is an OS-native form control whose internal metrics (subpixel padding,
+scrollbar gutter, line-height quantization) are not guaranteed to match a plain `<div>`.
+The only reliable fix is replacing `<textarea>` with `<div contenteditable="plaintext-only">`;
+both elements then use the same rendering engine and identical CSS applies cleanly.
+
+**Problem 2 — Main-thread freeze on large inputs**: `resolveMatches` + `buildHighlightSpans`
+run synchronously on the UI thread inside the `subscribe` callback. A 500-row CSV with
+an email regex produces thousands of `exec` iterations plus a large HTML string assignment —
+all blocking scroll, input, and repaints. Fix: move the engine work into a **Web Worker**
+so the UI thread never blocks. The worker receives `{ pattern, rawInput }` and posts back
+`{ spans, html }`. A match-count cap (default 2 000) ensures the HTML string stays bounded.
+
+### Tests — Write First, Must Fail Before Implementation ⚠️
+
+- [ ] T046 [P] Write unit tests for the 2 000-match cap in `resolveMatches.test.ts`:
+  assert that when match count exceeds cap, result includes `truncated: true` and
+  `spans.length <= 2000`; assert normal results are unaffected.
+
+- [ ] T047 [P] Write a Playwright e2e test `tests/e2e/performance.spec.ts`:
+  paste 500-row CSV, apply email pattern, assert page stays interactive (no
+  `page.waitForTimeout` > 500ms needed), assert highlight marks appear within 2s,
+  assert scroll does not lock up (simulate mouse scroll, assert `scrollTop` changes).
+
+### Implementation
+
+- [ ] T048 Replace `<textarea id="raw-input">` with `<div id="raw-input" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="false">` in `index.html`.
+  Update `DataPane.ts` to read `.textContent` / `.innerText` instead of `.value`;
+  dispatch `INPUT_CHANGE` on `input` event. Remove all textarea-specific CSS hacks
+  (`scrollbar-gutter`, `overflow-x: hidden`, `white-space`/`word-break` duplications)
+  — the layer and input are now the same element type so CSS is naturally identical.
+
+- [ ] T049 Add a `MATCH_CAP = 2_000` guard to `resolveMatches.ts`: after the exec loop,
+  if `group0.length > MATCH_CAP` truncate to first 2 000 and set `truncated: true` on
+  the result. Add `truncated?: boolean` to the `MatchResult` type in `types.ts`.
+
+- [ ] T050 Create `src/engine/matchWorker.ts` (Web Worker entry):
+  listens for `{ id, pattern, rawInput }` messages, calls `resolveMatches` +
+  `buildHighlightSpans`, posts back `{ id, html, spans, truncated, durationMs }`.
+  Export nothing — this is a worker entry point only.
+
+- [ ] T051 Update `DataPane.ts` to use the worker: instantiate `new Worker(new URL('../engine/matchWorker.ts', import.meta.url), { type: 'module' })` once on init; on state change post a job with an incrementing `id`; on message only apply if `id` matches the latest posted (drop stale results). Show a subtle `calculating…` indicator while the worker is busy.
+
+- [ ] T052 Update `main.css`: remove the textarea-specific alignment hacks added in
+  previous fix attempts (`scrollbar-gutter`, duplicate `white-space`/`word-break` on
+  `#raw-input`). Add `user-select: text` and `cursor: text` to `#raw-input` (now a div).
+  Add `.truncation-warning` banner style (same visual as `.perf-warning`).
+
+- [ ] T053 Add `truncation-warning` banner to `index.html` (hidden by default, shown by
+  `DataPane.ts` when `truncated === true`): "⚠ Showing first 2 000 of N matches — refine
+  your pattern to see more."
+
+**Checkpoint**: Paste 500-row CSV, apply email regex — highlights appear within ~1s, page
+remains scrollable throughout, highlights align precisely with text at all scroll positions.
+T046–T047 tests pass.
 
 ---
 
