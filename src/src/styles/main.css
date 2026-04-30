@@ -156,7 +156,7 @@ html, body {
   line-height: 1.5;
   padding: 8px;
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word; /* Must match #raw-input exactly */
   overflow: hidden; /* Never scrolls — scroll position driven by JS sync from textarea */
   pointer-events: none;
   color: transparent; /* Text hidden — only marks are visible */
@@ -175,6 +175,8 @@ html, body {
   font-size: 13px;
   line-height: 1.5;
   padding: 8px;
+  white-space: pre-wrap;   /* Must match .highlight-layer exactly */
+  word-break: break-word;  /* Must match .highlight-layer exactly */
   border: none;
   outline: none;
   resize: none;
@@ -184,7 +186,14 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: auto;
+  overflow-x: hidden;        /* match highlight-layer — both wrap at same width  */
+  scrollbar-gutter: stable;  /* reserve scrollbar gutter always so content width never shifts */
   z-index: 1;
+}
+
+/* Give the highlight layer the same right-gutter so text wraps identically */
+.highlight-layer {
+  scrollbar-gutter: stable;
 }
 
 /* ─── DQ Rules Panel (right sidebar) ─────────────────────────────────────── */
