@@ -3,12 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RegEx DQ Visualizer</title>
+    <title>VizEx — Regex Data Quality Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/palette.css" />
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
-    <button id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+
+    <!-- ── Global App Header ─────────────────────────────────────────── -->
+    <header id="app-header" role="banner">
+      <div class="app-header-brand">
+        <span class="app-header-logo" aria-hidden="true">⬡</span>
+        <span class="app-header-name">VizEx</span>
+        <span class="app-header-tagline">Regex Data Quality Visualizer</span>
+      </div>
+      <div class="app-header-actions">
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+      </div>
+    </header>
 
     <div id="app">
       <!-- LEFT COLUMN: regex pane (top) + data pane (bottom) -->
@@ -32,15 +46,25 @@
             </div>
           </div>
           <div class="pattern-error" id="pattern-error" role="alert" aria-live="polite"></div>
+          <!-- Quick Reference cheat sheet -->
+          <div id="regex-quick-ref"></div>
         </section>
 
         <!-- BOTTOM PANE: DataPane -->
         <section id="data-pane" aria-label="Raw data input">
-          <div class="perf-warning" id="perf-warning" hidden>
-            ⚠️ Input exceeds 50,000 characters — evaluation may be slow.
+          <div class="data-pane-toolbar">
+            <span id="no-matches-indicator" aria-live="polite"></span>
+            <span id="match-count" aria-live="polite"></span>
+            <span class="toolbar-spacer"></span>
+            <span id="timing-readout" aria-label="Evaluation time"></span>
+            <div class="toolbar-divider"></div>
+            <label id="btn-upload" class="btn-toolbar" title="Upload a text file (.txt, .csv, .log, .json)" aria-label="Upload file">
+              ↑ Upload
+              <input type="file" id="file-upload" accept=".txt,.csv,.log,.json,.tsv,.md" aria-hidden="true" tabindex="-1" />
+            </label>
+            <button id="btn-clear" class="btn-toolbar btn-toolbar-danger" title="Clear all input" aria-label="Clear input">✕ Clear</button>
           </div>
           <div class="truncation-warning" id="truncation-warning" hidden></div>
-          <div class="no-matches" id="no-matches-indicator" aria-live="polite"></div>
           <div class="data-editor-wrap">
             <div class="highlight-layer" id="highlight-layer" aria-hidden="true"></div>
             <div
@@ -90,18 +114,8 @@
           <!-- Example Patterns Panel -->
           <div id="examples-panel"></div>
 
-          <!-- Rule Sets -->
-          <div class="rule-sets-section">
-            <h3>Rule Sets</h3>
-            <div class="save-ruleset-row">
-              <input type="text" id="ruleset-name" placeholder="Rule set name…" maxlength="100" aria-label="Rule set name" />
-              <button id="btn-save-ruleset" type="button">Save</button>
-            </div>
-            <div id="storage-error" class="storage-error" role="alert" aria-live="polite"></div>
-            <div class="saved-sets-list" id="saved-sets-list" role="list" aria-label="Saved rule sets">
-              <!-- Saved set items injected by DQRulesPanel.ts -->
-            </div>
-          </div>
+          <!-- Input Statistics Panel -->
+          <div id="input-stats-panel"></div>
 
         </div><!-- /dq-panel-body -->
 

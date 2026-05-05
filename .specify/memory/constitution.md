@@ -1,21 +1,19 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.0.0 → 1.0.1
+Version change: 1.0.1 → 1.1.0
 Modified principles:
-  - III. Test-First: Clarified that TDD applies to logic units; UI/real-time features
-    use integration/visual testing as the equivalent discipline.
+  - III. Test-First: Removed. Testing is deferred for this phase of the project.
+  - I. Specification-First: Added agent enforcement obligation — AI agents MUST
+    proactively gate implementation requests behind spec/task documentation.
 Added sections: none
-Removed sections: none
-Templates reviewed:
-  - .specify/templates/plan-template.md ✅ no change needed
-  - .specify/templates/spec-template.md ✅ no change needed
-  - .specify/templates/tasks-template.md ✅ no change needed
+Removed sections:
+  - III. Test-First (removed by human decision 2026-05-05)
 Deferred TODOs:
   - TODO(RATIFICATION_DATE): Original ratification date unknown — set once team agrees on adoption date.
 -->
 
-# Specify Demo Constitution
+# VizEx Constitution
 
 ## Core Principles
 
@@ -26,6 +24,12 @@ Specifications MUST capture user stories with acceptance scenarios, functional r
 and measurable success criteria. No code is written without an approved spec. This ensures
 all work is traceable to an explicit, agreed-upon intent and prevents scope creep.
 
+**Agent Enforcement**: AI agents MUST NOT implement a feature or change without first
+confirming that a corresponding task entry exists in `tasks.md`. If a request arrives
+without a task, the agent MUST offer to add the spec/task documentation first before
+proceeding with implementation. This applies to every implementation request, no matter
+how small.
+
 ### II. AI-Assisted, Human-Approved
 
 AI agents (GitHub Copilot, Speckit commands) MUST be used to generate drafts of specs,
@@ -33,27 +37,14 @@ plans, tasks, and implementation artifacts. However, every generated artifact MU
 reviewed and approved by a human before it gates subsequent workflow stages. AI output
 is input, not output.
 
-### III. Test-First (NON-NEGOTIABLE)
-
-When tests are requested in a specification, TDD is mandatory:
-Tests MUST be written and confirmed failing before implementation begins.
-The Red-Green-Refactor cycle MUST be enforced. No implementation task is considered
-complete if the associated tests do not pass. This principle is non-negotiable and
-overrides delivery pressure.
-
-For features with real-time UI or visual behavior (e.g., live highlighting, interactive
-rendering), integration and visual/snapshot tests serve as the TDD-equivalent discipline.
-The same Red-Green-Refactor obligation applies — tests MUST be authored before
-implementation, even when the test form is visual rather than unit-based.
-
-### IV. Git Discipline
+### III. Git Discipline
 
 All work MUST live in a Git repository. Features MUST be developed on dedicated branches
 following the project's sequential numbering convention (e.g., `001-feature-name`).
 Commits MUST be atomic and descriptive. Constitution, spec, plan, and task artifacts
 MUST be committed before implementation begins. History is the project's audit trail.
 
-### V. Simplicity & YAGNI
+### IV. Simplicity & YAGNI
 
 Solutions MUST start as simple as possible. Complexity MUST be explicitly justified
 in the implementation plan's Complexity Tracking table. Abstractions, patterns, and
@@ -104,4 +95,4 @@ the PR is approved.
 Refer to `.github/copilot-instructions.md` for runtime development guidance during
 active feature work.
 
-**Version**: 1.0.1 | **Ratified**: TODO(RATIFICATION_DATE): set adoption date | **Last Amended**: 2026-04-30
+**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE): set adoption date | **Last Amended**: 2026-05-05
