@@ -86,3 +86,23 @@
 
 - [ ] T054 Validate ↗ Pattern and ↗ Sample buttons populate fields correctly
 - [ ] T055 Verify highlight alignment on large inputs (500+ rows)
+
+---
+
+## Phase 9: Performance Optimization
+
+- [x] T056 Increase debounce 150ms → 300ms in DataPane.ts
+- [x] T057 Add render cache to DataPane — skip re-render when pattern/input/flags unchanged
+- [x] T058 Add viewport-aware mark rendering to buildHighlightSpans.ts (skip off-screen marks)
+- [x] T059 Wire scroll-triggered re-render in DataPane.ts with rAF throttle
+
+---
+
+## Phase 10: Visual Overhaul
+
+- [x] T060 Add Inter + JetBrains Mono fonts via Google Fonts in index.html
+- [x] T061 CSS design system — spacing scale, surface depth, refined colors, Inter font vars
+- [x] T062 Styled panel headers — branded toolbar, pill badges, section dividers
+- [x] T063 Monospace pattern input — pill shape, glow on focus, cleaner flag buttons
+- [x] T064 Match count + timing readout in data pane toolbar
+- [x] T065 Dark mode deep polish — surface hierarchy, muted borders, correct badge tints

@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RegEx DQ Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/palette.css" />
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
@@ -36,11 +39,16 @@
 
         <!-- BOTTOM PANE: DataPane -->
         <section id="data-pane" aria-label="Raw data input">
+          <div class="data-pane-toolbar">
+            <span id="no-matches-indicator" aria-live="polite"></span>
+            <span id="match-count" aria-live="polite"></span>
+            <span class="toolbar-spacer"></span>
+            <span id="timing-readout" aria-label="Evaluation time"></span>
+          </div>
           <div class="perf-warning" id="perf-warning" hidden>
             ⚠️ Input exceeds 50,000 characters — evaluation may be slow.
           </div>
           <div class="truncation-warning" id="truncation-warning" hidden></div>
-          <div class="no-matches" id="no-matches-indicator" aria-live="polite"></div>
           <div class="data-editor-wrap">
             <div class="highlight-layer" id="highlight-layer" aria-hidden="true"></div>
             <div
