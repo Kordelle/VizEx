@@ -3,7 +3,7 @@
     "target": "es2023",
     "module": "esnext",
     "lib": ["ES2023", "DOM"],
-    "types": ["vite/client", "vitest/globals"],
+    "types": ["vite/client"],
     "skipLibCheck": true,
 
     /* Bundler mode */

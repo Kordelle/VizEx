@@ -1,6 +1,7 @@
 import { dispatch, subscribe, setPatternError } from '../state.js';
+import { resolveMatches } from '../engine/resolveMatches.js';
 import { buildHighlightSpans } from '../engine/buildHighlightSpans.js';
-import type { WorkerRequest, WorkerResponse } from '../engine/matchWorker.js';
+import { isPatternError } from '../types.js';
 
 function debounce<T extends unknown[]>(fn: (...args: T) => void, ms: number): (...args: T) => void {
   let timer: ReturnType<typeof setTimeout>;
@@ -19,107 +20,72 @@ export function initDataPane(): void {
 
   if (!rawInput || !highlightLayer) return;
 
-  // ── Web Worker setup ────────────────────────────────────────────────────────
-  const worker = new Worker(
-    new URL('../engine/matchWorker.ts', import.meta.url),
-    { type: 'module' }
-  );
-
-  let latestJobId = 0;
-
-  worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
-    const { id, html, error, truncated, totalMatchCount } = e.data;
-
-    // Drop stale results from superseded jobs
-    if (id !== latestJobId) return;
-
-    if (error !== null) {
-      applyHighlights('', rawInput.scrollTop, rawInput.scrollLeft);
-      setPatternError(error);
-      if (noMatchesIndicator) noMatchesIndicator.textContent = '';
-      if (truncationWarning) truncationWarning.hidden = true;
-      return;
-    }
-
-    setPatternError(null);
-    applyHighlights(html, rawInput.scrollTop, rawInput.scrollLeft);
-
-    const inputText = rawInput.textContent ?? '';
-    if (noMatchesIndicator) {
-      noMatchesIndicator.textContent = (inputText && e.data.spans.length === 0)
-        ? 'No matches found'
-        : '';
-    }
-
-    if (truncationWarning) {
-      if (truncated) {
-        truncationWarning.textContent =
-          `⚠ Showing first 2,000 of ${totalMatchCount.toLocaleString()} matches — refine your pattern to see more.`;
-        truncationWarning.hidden = false;
-      } else {
-        truncationWarning.hidden = true;
-      }
-    }
-  };
-
-  function applyHighlights(html: string, scrollTop: number, scrollLeft: number): void {
-    highlightLayer.innerHTML = html;
-    highlightLayer.scrollTop = scrollTop;
-    highlightLayer.scrollLeft = scrollLeft;
-  }
-
-  function postJob(inputText: string): void {
-    const state = getLatestState();
-    if (!state) return;
-
-    if (perfWarning) {
-      perfWarning.hidden = inputText.length <= 50_000;
-    }
-
-    if (!state.pattern.raw) {
-      applyHighlights(buildHighlightSpans(inputText, []), rawInput.scrollTop, rawInput.scrollLeft);
-      setPatternError(null);
-      if (noMatchesIndicator) noMatchesIndicator.textContent = '';
-      if (truncationWarning) truncationWarning.hidden = true;
-      return;
-    }
-
-    const id = ++latestJobId;
-    const req: WorkerRequest = { id, pattern: state.pattern, rawInput: inputText };
-    worker.postMessage(req);
-  }
-
-  // ── Scroll sync ─────────────────────────────────────────────────────────────
+  // Scroll sync — keep highlight layer position locked to input
   rawInput.addEventListener('scroll', () => {
     highlightLayer.scrollTop = rawInput.scrollTop;
     highlightLayer.scrollLeft = rawInput.scrollLeft;
   });
 
-  // ── Input → state dispatch ───────────────────────────────────────────────────
+  // Input → dispatch state change (debounced)
   const handleInputChange = debounce((value: string) => {
     dispatch({ type: 'INPUT_CHANGE', payload: { rawInput: value } });
   }, 150);
 
   rawInput.addEventListener('input', () => {
-    const text = rawInput.textContent ?? '';
-    handleInputChange(text);
+    handleInputChange(rawInput.textContent ?? '');
   });
 
-  // Prevent pasting rich HTML — keep plaintext only (fallback for browsers that
-  // don't fully honour contenteditable="plaintext-only")
+  // Strip rich HTML on paste — keep plain text only
   rawInput.addEventListener('paste', (e) => {
     e.preventDefault();
     const text = e.clipboardData?.getData('text/plain') ?? '';
     document.execCommand('insertText', false, text);
   });
 
-  // ── State subscription → post worker job ────────────────────────────────────
-  let cachedState: ReturnType<typeof import('../state.js').getState> | null = null;
-
-  function getLatestState() { return cachedState; }
-
+  // State change → re-run engine → update highlights
   subscribe((state) => {
-    cachedState = state;
-    postJob(state.rawInput);
+    const input = state.rawInput;
+    const pattern = state.pattern;
+
+    if (perfWarning) perfWarning.hidden = input.length <= 50_000;
+
+    // No pattern — clear everything
+    if (!pattern.raw) {
+      highlightLayer.innerHTML = buildHighlightSpans(input, []);
+      highlightLayer.scrollTop = rawInput.scrollTop;
+      setPatternError(null);
+      if (noMatchesIndicator) noMatchesIndicator.textContent = '';
+      if (truncationWarning) truncationWarning.hidden = true;
+      return;
+    }
+
+    const result = resolveMatches(pattern, input);
+
+    if (isPatternError(result)) {
+      highlightLayer.innerHTML = buildHighlightSpans(input, []);
+      highlightLayer.scrollTop = rawInput.scrollTop;
+      setPatternError(result.message);
+      if (noMatchesIndicator) noMatchesIndicator.textContent = '';
+      if (truncationWarning) truncationWarning.hidden = true;
+      return;
+    }
+
+    setPatternError(null);
+    highlightLayer.innerHTML = buildHighlightSpans(input, result.spans);
+    highlightLayer.scrollTop = rawInput.scrollTop;
+    highlightLayer.scrollLeft = rawInput.scrollLeft;
+
+    if (noMatchesIndicator) {
+      noMatchesIndicator.textContent = (input && result.spans.length === 0) ? 'No matches found' : '';
+    }
+
+    if (truncationWarning) {
+      if (result.truncated) {
+        truncationWarning.textContent = `⚠ Showing first 2,000 of ${result.totalMatchCount.toLocaleString()} matches — refine your pattern to see more.`;
+        truncationWarning.hidden = false;
+      } else {
+        truncationWarning.hidden = true;
+      }
+    }
   });
 }
