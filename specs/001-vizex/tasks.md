@@ -106,3 +106,54 @@
 - [x] T063 Monospace pattern input — pill shape, glow on focus, cleaner flag buttons
 - [x] T064 Match count + timing readout in data pane toolbar
 - [x] T065 Dark mode deep polish — surface hierarchy, muted borders, correct badge tints
+
+---
+
+## Phase 11: Repo Cleanup & Documentation
+
+- [x] T066 Write README.md — project summary, features, setup, usage
+- [x] T067 Catch-up spec.md — add user stories for all post-v1 features implemented
+- [x] T068 Catch-up tasks.md — add task entries for all untracked work done to date
+- [ ] T069 Merge 001-vizex → main via PR
+- [ ] T070 Tag v1.0.0 release on main
+
+---
+
+## Catch-up: Post-v1 Features (implemented without prior task entries)
+
+### Phase 11a: File Upload + Clear Button
+- [x] T071 Add file upload input + label to data pane toolbar in index.html
+- [x] T072 Wire FileReader in DataPane.ts — load file contents into raw-input
+- [x] T073 Add clear button to toolbar — reset raw-input and dispatch INPUT_CHANGE
+
+### Phase 11b: App Header + Branding
+- [x] T074 Add `<header id="app-header">` to index.html with brand + tagline + theme toggle
+- [x] T075 Add header CSS — 48px fixed bar, VizEx two-tone gradient wordmark, logo glow
+- [x] T076 Move theme toggle from floating fixed position into header actions
+
+### Phase 11c: Remove Rule Sets Section
+- [x] T077 Remove Rule Sets HTML block from DQ panel in index.html
+- [x] T078 Strip all RuleSetStorage imports and handlers from DQRulesPanel.ts
+- [x] T079 Remove Rule Sets CSS from main.css
+
+### Phase 11d: Regex Quick Reference
+- [x] T080 Create src/ui/RegexQuickRef.ts — collapsible token chip cheat sheet
+- [x] T081 Add #regex-quick-ref anchor div to index.html
+- [x] T082 Wire initRegexQuickRef() in main.ts
+- [x] T083 Add .qref-* CSS to main.css
+
+### Phase 11e: Input Statistics Panel
+- [x] T084 Create src/ui/InputStatsPanel.ts — live stats subscribing to state
+- [x] T085 Add #input-stats-panel anchor div to index.html
+- [x] T086 Wire initInputStatsPanel() in main.ts
+- [x] T087 Add .stats-* CSS to main.css
+
+### Phase 11f: VizEx Rebrand
+- [x] T088 Update title, header name, logo in index.html
+- [x] T089 Update package.json name to vizex
+- [x] T090 Update all spec/plan/tasks/docs headings to VizEx
+- [x] T091 Rename branch 001-regex-dq-visualizer → 001-vizex
+- [x] T092 Rename specs directory to specs/001-vizex/
+- [x] T093 Update .specify/feature.json and .github/copilot-instructions.md paths
+- [x] T094 Rename GitHub repo to VizEx; update git remote URL
+- [x] T095 Rename local folder specify_demo → vizex
