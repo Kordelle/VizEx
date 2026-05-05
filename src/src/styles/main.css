@@ -102,7 +102,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--sp-4);
-  height: 44px;
+  height: 48px;
   background: var(--bg-toolbar);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
@@ -117,17 +117,23 @@ html, body {
 }
 
 .app-header-logo {
-  font-size: 18px;
+  font-size: 20px;
   color: var(--accent);
   line-height: 1;
   flex-shrink: 0;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 50%, transparent));
 }
 
 .app-header-name {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--text);
+  /* Two-tone: "Viz" in accent, "Ex" in text */
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 55%, var(--text) 55%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .app-header-tagline {
@@ -150,7 +156,7 @@ html, body {
 #app {
   display: grid;
   grid-template-columns: 1fr var(--sidebar-width);
-  height: calc(100vh - 44px); /* full height minus header */
+  height: calc(100vh - 48px); /* full height minus header */
   gap: 0;
   overflow: hidden;
 }
