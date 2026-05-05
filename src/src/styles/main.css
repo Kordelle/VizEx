@@ -1,0 +1,489 @@
+/* ─── Reset & Base ───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sidebar-width: 320px;
+  --pane-gap: 4px;
+  --border-color: #ccc;
+  --bg: #f9f9f9;
+  --bg-pane: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --error-color: #c62828;
+  --warning-bg: #fff3cd;
+  --warning-fg: #664d03;
+  --font-mono: 'Menlo', 'Consolas', 'Courier New', monospace;
+  --font-ui: system-ui, -apple-system, sans-serif;
+  --radius: 4px;
+}
+
+[data-theme="dark"] {
+  --border-color: #444;
+  --bg: #1e1e1e;
+  --bg-pane: #252526;
+  --text: #d4d4d4;
+  --text-muted: #888;
+  --error-color: #f48771;
+  --warning-bg: #4d3800;
+  --warning-fg: #ffd56b;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ─── App Layout: [left column] [right sidebar] ──────────────────────────── */
+#app {
+  display: grid;
+  grid-template-columns: 1fr var(--sidebar-width);
+  grid-template-rows: 100vh;
+  height: 100vh;
+}
+
+/* ─── Left Column: [regex pane top] [data pane bottom] ───────────────────── */
+#left-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--border-color);
+}
+
+/* ─── Regex Pane (top) ───────────────────────────────────────────────────── */
+#regex-pane {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-pane);
+}
+
+.regex-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#pattern-input {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  min-width: 0;
+}
+
+#pattern-input.error { border-color: var(--error-color); }
+
+.flag-toggles {
+  display: flex;
+  gap: 4px;
+}
+
+.flag-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s, color 0.1s;
+}
+
+.flag-btn.active {
+  background: #0066cc;
+  color: #fff;
+  border-color: #0066cc;
+}
+
+.pattern-error {
+  font-size: 12px;
+  color: var(--error-color);
+  font-family: var(--font-mono);
+  padding: 2px 4px;
+  min-height: 18px;
+}
+
+/* ─── Data Pane (bottom) ─────────────────────────────────────────────────── */
+#data-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-pane);
+}
+
+.perf-warning {
+  background: var(--warning-bg);
+  color: var(--warning-fg);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.truncation-warning {
+  background: var(--warning-bg);
+  color: var(--warning-fg);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.no-matches {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border-color);
+  min-height: 22px;
+}
+
+.data-editor-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/*
+ * Mirror-div highlight technique:
+ * Both .highlight-layer and #raw-input are plain divs with IDENTICAL layout
+ * CSS so text wraps at exactly the same column widths and line positions.
+ * #raw-input is a contenteditable div (not a <textarea>) to avoid OS-native
+ * form-control metrics that differ subtly from a plain div even with the same CSS.
+ */
+.highlight-layer,
+#raw-input {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
+}
+
+/* Highlight layer — sits behind, shows coloured marks only */
+.highlight-layer {
+  overflow: hidden; /* driven by JS scroll sync — never scrolls independently */
+  pointer-events: none;
+  color: transparent;
+  z-index: 0;
+}
+
+.highlight-layer mark {
+  border-radius: 2px;
+  padding: 0;
+  cursor: default;
+}
+
+/* Editable input layer — sits in front, user types/scrolls here */
+#raw-input {
+  background: transparent;
+  color: var(--text);
+  caret-color: var(--text);
+  border: none;
+  outline: none;
+  cursor: text;
+  user-select: text;
+  z-index: 1;
+}
+
+/* Placeholder via data attribute (contenteditable has no native placeholder) */
+#raw-input:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* ─── DQ Rules Panel (right sidebar) ─────────────────────────────────────── */
+#dq-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-pane);
+}
+
+.dq-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Scrollable body — everything below the header */
+.dq-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.dq-rules-list {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.dq-rule-item {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dq-rule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.dq-rule-name { font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dq-rule-condition { color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; }
+
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.badge-pass  { background: var(--badge-pass-bg);  color: var(--badge-pass-fg); }
+.badge-fail  { background: var(--badge-fail-bg);  color: var(--badge-fail-fg); }
+.badge-error { background: var(--badge-error-bg); color: var(--badge-error-fg); }
+
+.dq-rule-actions { display: flex; gap: 4px; }
+.btn-sm {
+  font-size: 11px;
+  padding: 2px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn-sm:hover { background: var(--border-color); }
+.btn-sm.danger { color: var(--error-color); border-color: var(--error-color); }
+
+/* Add Rule Form */
+.add-rule-form {
+  padding: 6px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.add-rule-form input, .add-rule-form select {
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+}
+
+.add-rule-form .form-row { display: flex; gap: 4px; }
+.add-rule-form .form-row input { flex: 1; }
+
+.btn-primary {
+  font-size: 12px;
+  padding: 5px 10px;
+  background: #0066cc;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  width: 100%;
+}
+.btn-primary:hover { background: #0052a3; }
+
+/* Rule Sets Section */
+.rule-sets-section {
+  border-top: 2px solid var(--border-color);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rule-sets-section h3 { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+
+.save-ruleset-row {
+  display: flex;
+  gap: 4px;
+}
+.save-ruleset-row input {
+  flex: 1;
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+}
+.save-ruleset-row button {
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.saved-sets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.saved-set-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  padding: 3px 4px;
+  border-radius: var(--radius);
+}
+.saved-set-item:hover { background: var(--border-color); }
+.saved-set-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saved-set-count { color: var(--text-muted); font-size: 11px; }
+
+.storage-error {
+  font-size: 11px;
+  color: var(--error-color);
+  padding: 2px 4px;
+}
+
+/* ─── Theme Toggle ────────────────────────────────────────────────────────── */
+#theme-toggle {
+  position: fixed;
+  top: 41px;
+  right: calc(var(--sidebar-width) + 8px);
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* ─── Examples Panel ─────────────────────────────────────────────────────── */
+#examples-panel {
+  border-top: 1px solid var(--border-color);
+}
+
+.examples-details {
+  font-size: 12px;
+}
+
+.examples-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text);
+  user-select: none;
+  list-style: none;
+}
+.examples-summary::-webkit-details-marker { display: none; }
+
+.examples-count {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--text-muted);
+}
+
+.examples-body {
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.example-category {
+  margin-bottom: 4px;
+}
+
+.example-category-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 6px 8px 2px;
+  border-top: 1px solid var(--border-color);
+}
+
+.example-entry {
+  padding: 4px 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+}
+.example-entry:last-child { border-bottom: none; }
+
+.example-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 1px;
+}
+
+.example-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.example-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-use-pattern,
+.btn-use-sample {
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn-use-pattern:hover,
+.btn-use-sample:hover {
+  background: color-mix(in srgb, var(--bg) 70%, var(--text) 30%);
+}

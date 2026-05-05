@@ -1,0 +1,45 @@
+/* ─── WCAG AA Color Palette — 8 Highlight Pairs ─────────────────────────────
+   Each pair: --hl-N-bg (background) + --hl-N-fg (foreground text).
+   All pairs meet WCAG AA ≥4.5:1 contrast ratio.
+   Override via [data-theme="dark"] for dark mode.
+─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --hl-1-bg: #FFD700; --hl-1-fg: #5C4400; /* gold         */
+  --hl-2-bg: #90EE90; --hl-2-fg: #1A4A1A; /* green        */
+  --hl-3-bg: #ADD8E6; --hl-3-fg: #002D45; /* blue         */
+  --hl-4-bg: #FFB6C1; --hl-4-fg: #5C0018; /* pink         */
+  --hl-5-bg: #DDA0DD; --hl-5-fg: #3B0062; /* plum         */
+  --hl-6-bg: #FFDAB9; --hl-6-fg: #5C2C00; /* peach        */
+  --hl-7-bg: #B0E0E6; --hl-7-fg: #002D3A; /* powder blue  */
+  --hl-8-bg: #98FB98; --hl-8-fg: #0F3E0F; /* pale green   */
+
+  --badge-pass-bg: #2E7D32; --badge-pass-fg: #FFFFFF;
+  --badge-fail-bg: #C62828; --badge-fail-fg: #FFFFFF;
+  --badge-error-bg: #E65100; --badge-error-fg: #FFFFFF;
+}
+
+[data-theme="dark"] {
+  --hl-1-bg: #7B6000; --hl-1-fg: #FFF8E1; /* gold dark    */
+  --hl-2-bg: #1A5C1A; --hl-2-fg: #F1F8F1; /* green dark   */
+  --hl-3-bg: #003D5C; --hl-3-fg: #E8F4F8; /* blue dark    */
+  --hl-4-bg: #7A0020; --hl-4-fg: #FFF0F3; /* pink dark    */
+  --hl-5-bg: #4B0082; --hl-5-fg: #F5EEFF; /* plum dark    */
+  --hl-6-bg: #7A3B00; --hl-6-fg: #FFF5EE; /* peach dark   */
+  --hl-7-bg: #003E50; --hl-7-fg: #E0F4F8; /* p.blue dark  */
+  --hl-8-bg: #145214; --hl-8-fg: #F0FFF0; /* p.green dark */
+
+  --badge-pass-bg: #43A047; --badge-pass-fg: #FFFFFF;
+  --badge-fail-bg: #E53935; --badge-fail-fg: #FFFFFF;
+  --badge-error-bg: #FB8C00; --badge-error-fg: #FFFFFF;
+}
+
+/* Apply palette to mark elements */
+mark[data-group="0"], mark[data-group="1"] { background: var(--hl-1-bg); color: var(--hl-1-fg); }
+mark[data-group="2"] { background: var(--hl-2-bg); color: var(--hl-2-fg); }
+mark[data-group="3"] { background: var(--hl-3-bg); color: var(--hl-3-fg); }
+mark[data-group="4"] { background: var(--hl-4-bg); color: var(--hl-4-fg); }
+mark[data-group="5"] { background: var(--hl-5-bg); color: var(--hl-5-fg); }
+mark[data-group="6"] { background: var(--hl-6-bg); color: var(--hl-6-fg); }
+mark[data-group="7"] { background: var(--hl-7-bg); color: var(--hl-7-fg); }
+mark[data-group="8"] { background: var(--hl-8-bg); color: var(--hl-8-fg); }

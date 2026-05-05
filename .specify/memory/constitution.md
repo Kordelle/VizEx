@@ -1,18 +1,16 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: [unversioned template] → 1.0.0
-Modified principles: N/A (initial constitution)
-Added sections:
-  - Core Principles (I–V)
-  - Development Standards
-  - Tooling & Workflow
-  - Governance
-Removed sections: N/A
+Version change: 1.0.0 → 1.0.1
+Modified principles:
+  - III. Test-First: Clarified that TDD applies to logic units; UI/real-time features
+    use integration/visual testing as the equivalent discipline.
+Added sections: none
+Removed sections: none
 Templates reviewed:
-  - .specify/templates/plan-template.md ✅ aligned (Constitution Check gate present)
-  - .specify/templates/spec-template.md ✅ aligned (user stories, acceptance criteria)
-  - .specify/templates/tasks-template.md ✅ aligned (phased, per-story structure)
+  - .specify/templates/plan-template.md ✅ no change needed
+  - .specify/templates/spec-template.md ✅ no change needed
+  - .specify/templates/tasks-template.md ✅ no change needed
 Deferred TODOs:
   - TODO(RATIFICATION_DATE): Original ratification date unknown — set once team agrees on adoption date.
 -->
@@ -42,6 +40,11 @@ Tests MUST be written and confirmed failing before implementation begins.
 The Red-Green-Refactor cycle MUST be enforced. No implementation task is considered
 complete if the associated tests do not pass. This principle is non-negotiable and
 overrides delivery pressure.
+
+For features with real-time UI or visual behavior (e.g., live highlighting, interactive
+rendering), integration and visual/snapshot tests serve as the TDD-equivalent discipline.
+The same Red-Green-Refactor obligation applies — tests MUST be authored before
+implementation, even when the test form is visual rather than unit-based.
 
 ### IV. Git Discipline
 
@@ -101,4 +104,4 @@ the PR is approved.
 Refer to `.github/copilot-instructions.md` for runtime development guidance during
 active feature work.
 
-**Version**: 1.0.0 | **Ratified**: TODO(RATIFICATION_DATE): set adoption date | **Last Amended**: 2026-04-30
+**Version**: 1.0.1 | **Ratified**: TODO(RATIFICATION_DATE): set adoption date | **Last Amended**: 2026-04-30
