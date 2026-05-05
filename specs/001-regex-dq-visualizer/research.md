@@ -1,4 +1,4 @@
-# Research: Interactive RegEx Visualizer for Data Quality
+# Research: VizEx — Regex Data Quality Visualizer
 
 **Feature**: `001-regex-dq-visualizer`
 **Date**: 2026-04-30

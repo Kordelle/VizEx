@@ -15,7 +15,7 @@ Deferred TODOs:
   - TODO(RATIFICATION_DATE): Original ratification date unknown — set once team agrees on adoption date.
 -->
 
-# Specify Demo Constitution
+# VizEx Constitution
 
 ## Core Principles
 

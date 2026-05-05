@@ -1,4 +1,4 @@
-# Implementation Plan: Interactive RegEx Visualizer for Data Quality
+# Implementation Plan: VizEx — Regex Data Quality Visualizer
 
 **Branch**: `001-regex-dq-visualizer` | **Date**: 2026-04-30 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/001-regex-dq-visualizer/spec.md`

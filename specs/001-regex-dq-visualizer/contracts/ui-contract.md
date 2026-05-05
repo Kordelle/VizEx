@@ -1,4 +1,4 @@
-# UI Contract: Interactive RegEx Visualizer for Data Quality
+# UI Contract: VizEx — Regex Data Quality Visualizer
 
 **Feature**: `001-regex-dq-visualizer`
 **Date**: 2026-04-30

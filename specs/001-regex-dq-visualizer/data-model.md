@@ -1,4 +1,4 @@
-# Data Model: Interactive RegEx Visualizer for Data Quality
+# Data Model: VizEx — Regex Data Quality Visualizer
 
 **Feature**: `001-regex-dq-visualizer`
 **Date**: 2026-04-30

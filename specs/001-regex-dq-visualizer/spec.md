@@ -1,4 +1,4 @@
-# Feature Specification: Interactive RegEx Visualizer for Data Quality
+# Feature Specification: VizEx — Regex Data Quality Visualizer
 
 **Feature Branch**: `001-regex-dq-visualizer`
 **Created**: 2026-04-30

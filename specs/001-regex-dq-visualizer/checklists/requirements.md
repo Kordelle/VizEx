@@ -1,4 +1,4 @@
-# Specification Quality Checklist: Interactive RegEx Visualizer for Data Quality
+# Specification Quality Checklist: VizEx — Regex Data Quality Visualizer
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-04-30

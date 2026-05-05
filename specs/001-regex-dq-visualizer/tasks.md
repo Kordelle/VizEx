@@ -1,4 +1,4 @@
-# Tasks: Interactive RegEx Visualizer for Data Quality
+# Tasks: VizEx — Regex Data Quality Visualizer
 
 **Input**: Design documents from `/specs/001-regex-dq-visualizer/`
 
