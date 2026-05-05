@@ -22,14 +22,21 @@ function rafThrottle(fn: () => void): () => void {
   };
 }
 
+/** Load text into the raw-input div and fire state update */
+function loadText(rawInput: HTMLDivElement, text: string): void {
+  rawInput.textContent = text;
+  dispatch({ type: 'INPUT_CHANGE', payload: { rawInput: text } });
+}
+
 export function initDataPane(): void {
   const rawInput       = document.getElementById('raw-input')            as HTMLDivElement;
   const highlightLayer = document.getElementById('highlight-layer')      as HTMLDivElement;
-  const perfWarning    = document.getElementById('perf-warning')         as HTMLDivElement;
   const truncWarning   = document.getElementById('truncation-warning')   as HTMLDivElement;
   const noMatches      = document.getElementById('no-matches-indicator') as HTMLDivElement;
   const matchCount     = document.getElementById('match-count')          as HTMLSpanElement | null;
   const timingReadout  = document.getElementById('timing-readout')       as HTMLSpanElement | null;
+  const fileUpload     = document.getElementById('file-upload')          as HTMLInputElement | null;
+  const btnClear       = document.getElementById('btn-clear')            as HTMLButtonElement | null;
 
   if (!rawInput || !highlightLayer) return;
 
@@ -62,7 +69,7 @@ export function initDataPane(): void {
     repaintThrottled();
   });
 
-  // ── Input → dispatch (debounce raised to 300ms) ───────────────────────────
+  // ── Input → dispatch (debounced 300ms) ────────────────────────────────────
   const handleInputChange = debounce((value: string) => {
     dispatch({ type: 'INPUT_CHANGE', payload: { rawInput: value } });
   }, 300);
@@ -78,13 +85,30 @@ export function initDataPane(): void {
     document.execCommand('insertText', false, text);
   });
 
+  // ── File upload ───────────────────────────────────────────────────────────
+  fileUpload?.addEventListener('change', () => {
+    const file = fileUpload.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string ?? '';
+      loadText(rawInput, text);
+      // Reset the input so the same file can be re-loaded
+      fileUpload.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  // ── Clear button ──────────────────────────────────────────────────────────
+  btnClear?.addEventListener('click', () => {
+    loadText(rawInput, '');
+  });
+
   // ── State change → re-run engine → update highlights ─────────────────────
   subscribe((state) => {
     const input    = state.rawInput;
     const pattern  = state.pattern;
     const flagsKey = `${pattern.flags.caseInsensitive}|${pattern.flags.multiline}|${pattern.flags.dotAll}`;
-
-    if (perfWarning) perfWarning.hidden = input.length <= 50_000;
 
     // No pattern — clear everything
     if (!pattern.raw) {

@@ -1,6 +1,9 @@
 /* ─── Reset & Base ───────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Ensure [hidden] always wins over display:flex rules */
+[hidden] { display: none !important; }
+
 :root {
   /* Fonts */
   --font-ui:   'Inter', system-ui, -apple-system, sans-serif;
@@ -227,6 +230,45 @@ html, body {
   color: var(--text-subtle);
   font-family: var(--font-mono);
   font-size: 10px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--border-color);
+  flex-shrink: 0;
+}
+
+/* Upload label acts as a button */
+.btn-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+}
+.btn-toolbar:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+/* Hide the real file input visually */
+.btn-toolbar input[type="file"] {
+  display: none;
+}
+.btn-toolbar-danger:hover {
+  background: color-mix(in srgb, var(--error-color) 12%, var(--bg-input));
+  color: var(--error-color);
+  border-color: color-mix(in srgb, var(--error-color) 40%, transparent);
 }
 
 #no-matches-indicator {
@@ -552,7 +594,7 @@ html, body {
 /* ─── Theme Toggle ────────────────────────────────────────────────────────── */
 #theme-toggle {
   position: fixed;
-  top: 9px;
+  top: 42px;
   right: calc(var(--sidebar-width) + var(--sp-2));
   font-size: 11px;
   font-weight: 500;
@@ -608,7 +650,7 @@ html, body {
 }
 
 .examples-body {
-  max-height: 320px;
+  max-height: 360px;
   overflow-y: auto;
   padding: var(--sp-1) 0;
 }

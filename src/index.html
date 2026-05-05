@@ -44,9 +44,12 @@
             <span id="match-count" aria-live="polite"></span>
             <span class="toolbar-spacer"></span>
             <span id="timing-readout" aria-label="Evaluation time"></span>
-          </div>
-          <div class="perf-warning" id="perf-warning" hidden>
-            ⚠️ Input exceeds 50,000 characters — evaluation may be slow.
+            <div class="toolbar-divider"></div>
+            <label id="btn-upload" class="btn-toolbar" title="Upload a text file (.txt, .csv, .log, .json)" aria-label="Upload file">
+              ↑ Upload
+              <input type="file" id="file-upload" accept=".txt,.csv,.log,.json,.tsv,.md" aria-hidden="true" tabindex="-1" />
+            </label>
+            <button id="btn-clear" class="btn-toolbar btn-toolbar-danger" title="Clear all input" aria-label="Clear input">✕ Clear</button>
           </div>
           <div class="truncation-warning" id="truncation-warning" hidden></div>
           <div class="data-editor-wrap">
