@@ -33,6 +33,7 @@ export interface MatchResult {
   hasOverlaps: boolean;     // True if any overlapping matches were resolved
   durationMs: number;       // Evaluation time in milliseconds
   overSoftCap: boolean;     // True if input exceeded 50k chars
+  truncated?: boolean;      // True if match count exceeded MATCH_CAP (2000) and spans were trimmed
 }
 
 // ─── Pattern Error ────────────────────────────────────────────────────────────

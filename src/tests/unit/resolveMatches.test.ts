@@ -116,4 +116,33 @@ describe('resolveMatches', () => {
     if ('message' in result) throw new Error('Expected MatchResult');
     expect(result.spans.length).toBe(2);
   });
+
+  // ─── T046: Match cap tests ────────────────────────────────────────────────
+
+  it('truncates spans to 2000 when match count exceeds cap', () => {
+    // 2001 single-char matches 'a' separated by spaces
+    const input = Array.from({ length: 2_001 }, (_, i) => `a${i}`).join(' ');
+    const result = resolveMatches(pat('a\\d+'), input);
+    if ('message' in result) throw new Error('Expected MatchResult');
+    expect(result.truncated).toBe(true);
+    expect(result.spans.length).toBeLessThanOrEqual(2_000);
+  });
+
+  it('does NOT set truncated for match counts at or below 2000', () => {
+    // exactly 10 matches
+    const input = Array.from({ length: 10 }, (_, i) => `a${i}`).join(' ');
+    const result = resolveMatches(pat('a\\d+'), input);
+    if ('message' in result) throw new Error('Expected MatchResult');
+    expect(result.truncated).toBeFalsy();
+    expect(result.spans.length).toBe(10);
+  });
+
+  it('totalMatchCount reflects actual count even when truncated', () => {
+    const input = Array.from({ length: 2_500 }, (_, i) => `a${i}`).join(' ');
+    const result = resolveMatches(pat('a\\d+'), input);
+    if ('message' in result) throw new Error('Expected MatchResult');
+    expect(result.truncated).toBe(true);
+    expect(result.totalMatchCount).toBe(2_500);
+    expect(result.spans.length).toBe(2_000);
+  });
 });

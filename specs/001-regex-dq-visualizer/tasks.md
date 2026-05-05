@@ -359,40 +359,40 @@ so the UI thread never blocks. The worker receives `{ pattern, rawInput }` and p
 
 ### Tests — Write First, Must Fail Before Implementation ⚠️
 
-- [ ] T046 [P] Write unit tests for the 2 000-match cap in `resolveMatches.test.ts`:
+- [x] T046 [P] Write unit tests for the 2 000-match cap in `resolveMatches.test.ts`:
   assert that when match count exceeds cap, result includes `truncated: true` and
   `spans.length <= 2000`; assert normal results are unaffected.
 
-- [ ] T047 [P] Write a Playwright e2e test `tests/e2e/performance.spec.ts`:
+- [x] T047 [P] Write a Playwright e2e test `tests/e2e/performance.spec.ts`:
   paste 500-row CSV, apply email pattern, assert page stays interactive (no
   `page.waitForTimeout` > 500ms needed), assert highlight marks appear within 2s,
   assert scroll does not lock up (simulate mouse scroll, assert `scrollTop` changes).
 
 ### Implementation
 
-- [ ] T048 Replace `<textarea id="raw-input">` with `<div id="raw-input" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="false">` in `index.html`.
+- [x] T048 Replace `<textarea id="raw-input">` with `<div id="raw-input" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="false">` in `index.html`.
   Update `DataPane.ts` to read `.textContent` / `.innerText` instead of `.value`;
   dispatch `INPUT_CHANGE` on `input` event. Remove all textarea-specific CSS hacks
   (`scrollbar-gutter`, `overflow-x: hidden`, `white-space`/`word-break` duplications)
   — the layer and input are now the same element type so CSS is naturally identical.
 
-- [ ] T049 Add a `MATCH_CAP = 2_000` guard to `resolveMatches.ts`: after the exec loop,
+- [x] T049 Add a `MATCH_CAP = 2_000` guard to `resolveMatches.ts`: after the exec loop,
   if `group0.length > MATCH_CAP` truncate to first 2 000 and set `truncated: true` on
   the result. Add `truncated?: boolean` to the `MatchResult` type in `types.ts`.
 
-- [ ] T050 Create `src/engine/matchWorker.ts` (Web Worker entry):
+- [x] T050 Create `src/engine/matchWorker.ts` (Web Worker entry):
   listens for `{ id, pattern, rawInput }` messages, calls `resolveMatches` +
   `buildHighlightSpans`, posts back `{ id, html, spans, truncated, durationMs }`.
   Export nothing — this is a worker entry point only.
 
-- [ ] T051 Update `DataPane.ts` to use the worker: instantiate `new Worker(new URL('../engine/matchWorker.ts', import.meta.url), { type: 'module' })` once on init; on state change post a job with an incrementing `id`; on message only apply if `id` matches the latest posted (drop stale results). Show a subtle `calculating…` indicator while the worker is busy.
+- [x] T051 Update `DataPane.ts` to use the worker: instantiate `new Worker(new URL('../engine/matchWorker.ts', import.meta.url), { type: 'module' })` once on init; on state change post a job with an incrementing `id`; on message only apply if `id` matches the latest posted (drop stale results). Show a subtle `calculating…` indicator while the worker is busy.
 
-- [ ] T052 Update `main.css`: remove the textarea-specific alignment hacks added in
+- [x] T052 Update `main.css`: remove the textarea-specific alignment hacks added in
   previous fix attempts (`scrollbar-gutter`, duplicate `white-space`/`word-break` on
   `#raw-input`). Add `user-select: text` and `cursor: text` to `#raw-input` (now a div).
   Add `.truncation-warning` banner style (same visual as `.perf-warning`).
 
-- [ ] T053 Add `truncation-warning` banner to `index.html` (hidden by default, shown by
+- [x] T053 Add `truncation-warning` banner to `index.html` (hidden by default, shown by
   `DataPane.ts` when `truncated === true`): "⚠ Showing first 2 000 of N matches — refine
   your pattern to see more."
 

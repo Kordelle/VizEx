@@ -39,16 +39,21 @@
           <div class="perf-warning" id="perf-warning" hidden>
             ⚠️ Input exceeds 50,000 characters — evaluation may be slow.
           </div>
+          <div class="truncation-warning" id="truncation-warning" hidden></div>
           <div class="no-matches" id="no-matches-indicator" aria-live="polite"></div>
           <div class="data-editor-wrap">
             <div class="highlight-layer" id="highlight-layer" aria-hidden="true"></div>
-            <textarea
+            <div
               id="raw-input"
-              placeholder="Paste raw data here (log line, CSV row, JSON fragment…)"
-              spellcheck="false"
-              autocomplete="off"
+              contenteditable="plaintext-only"
+              role="textbox"
+              aria-multiline="true"
               aria-label="Raw data input"
-            ></textarea>
+              spellcheck="false"
+              autocorrect="off"
+              autocapitalize="off"
+              data-placeholder="Paste raw data here (log line, CSV row, JSON fragment…)"
+            ></div>
           </div>
         </section>
 

@@ -44,9 +44,9 @@ export function initExamplesPanel(): void {
     btn.addEventListener('click', () => {
       const sample = btn.dataset['sample'] ?? '';
       dispatch({ type: 'INPUT_CHANGE', payload: { rawInput: sample } });
-      // Also update the visible textarea
-      const textarea = document.getElementById('raw-input') as HTMLTextAreaElement | null;
-      if (textarea) { textarea.value = sample; textarea.dispatchEvent(new Event('input')); }
+      // Also update the visible contenteditable div
+      const inputDiv = document.getElementById('raw-input') as HTMLDivElement | null;
+      if (inputDiv) { inputDiv.textContent = sample; inputDiv.dispatchEvent(new Event('input')); }
     });
   });
 }

@@ -1,6 +1,7 @@
 import type { MatchResult, MatchSpan, OverlapInfo, PatternError, RegexPattern } from '../types.js';
 
 const SOFT_CAP = 50_000;
+const MATCH_CAP = 2_000;
 
 function buildFlagsString(pattern: RegexPattern): string {
   let f = 'g'; // always global
@@ -56,11 +57,14 @@ export function resolveMatches(pattern: RegexPattern, input: string): MatchResul
 
   // Greedy non-overlapping pass over group-0 matches
   const group0 = rawMatches.filter(r => r.groupIndex === 0);
+  const totalMatchCount = group0.length;
+  const truncated = group0.length > MATCH_CAP;
+  const cappedGroup0 = truncated ? group0.slice(0, MATCH_CAP) : group0;
 
   const acceptedSpans: MatchSpan[] = [];
   let prevEnd = -1;
 
-  for (const match of group0) {
+  for (const match of cappedGroup0) {
     if (match.start < prevEnd) {
       // Overlapping — store as alternative on the last accepted span
       if (acceptedSpans.length > 0) {
@@ -84,9 +88,10 @@ export function resolveMatches(pattern: RegexPattern, input: string): MatchResul
 
   return {
     spans: acceptedSpans,
-    totalMatchCount: group0.length,
+    totalMatchCount,
     hasOverlaps,
     durationMs: performance.now() - t0,
     overSoftCap,
+    truncated: truncated || undefined,
   };
 }

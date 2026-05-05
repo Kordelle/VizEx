@@ -133,6 +133,14 @@ html, body {
   border-bottom: 1px solid var(--border-color);
 }
 
+.truncation-warning {
+  background: var(--warning-bg);
+  color: var(--warning-fg);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
 .no-matches {
   font-size: 12px;
   color: var(--text-muted);
@@ -147,8 +155,15 @@ html, body {
   overflow: hidden;
 }
 
-/* Highlight layer sits behind the textarea */
-.highlight-layer {
+/*
+ * Mirror-div highlight technique:
+ * Both .highlight-layer and #raw-input are plain divs with IDENTICAL layout
+ * CSS so text wraps at exactly the same column widths and line positions.
+ * #raw-input is a contenteditable div (not a <textarea>) to avoid OS-native
+ * form-control metrics that differ subtly from a plain div even with the same CSS.
+ */
+.highlight-layer,
+#raw-input {
   position: absolute;
   inset: 0;
   font-family: var(--font-mono);
@@ -156,10 +171,16 @@ html, body {
   line-height: 1.5;
   padding: 8px;
   white-space: pre-wrap;
-  word-break: break-word; /* Must match #raw-input exactly */
-  overflow: hidden; /* Never scrolls — scroll position driven by JS sync from textarea */
+  word-break: break-word;
+  overflow: auto;
+}
+
+/* Highlight layer — sits behind, shows coloured marks only */
+.highlight-layer {
+  overflow: hidden; /* driven by JS scroll sync — never scrolls independently */
   pointer-events: none;
-  color: transparent; /* Text hidden — only marks are visible */
+  color: transparent;
+  z-index: 0;
 }
 
 .highlight-layer mark {
@@ -168,32 +189,23 @@ html, body {
   cursor: default;
 }
 
+/* Editable input layer — sits in front, user types/scrolls here */
 #raw-input {
-  position: absolute;
-  inset: 0;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.5;
-  padding: 8px;
-  white-space: pre-wrap;   /* Must match .highlight-layer exactly */
-  word-break: break-word;  /* Must match .highlight-layer exactly */
-  border: none;
-  outline: none;
-  resize: none;
   background: transparent;
   color: var(--text);
   caret-color: var(--text);
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  overflow-x: hidden;        /* match highlight-layer — both wrap at same width  */
-  scrollbar-gutter: stable;  /* reserve scrollbar gutter always so content width never shifts */
+  border: none;
+  outline: none;
+  cursor: text;
+  user-select: text;
   z-index: 1;
 }
 
-/* Give the highlight layer the same right-gutter so text wraps identically */
-.highlight-layer {
-  scrollbar-gutter: stable;
+/* Placeholder via data attribute (contenteditable has no native placeholder) */
+#raw-input:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
 }
 
 /* ─── DQ Rules Panel (right sidebar) ─────────────────────────────────────── */
