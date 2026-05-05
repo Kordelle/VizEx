@@ -1,7 +1,6 @@
-import { dispatch, subscribe, getState, setRuleResults, setSavedRuleSets, setRulesFromSet, setStorageError } from '../state.js';
+import { dispatch, subscribe, setRuleResults } from '../state.js';
 import { evaluateRule } from '../engine/evaluateRule.js';
-import { RuleSetStorage, StorageError } from '../storage/ruleSetStorage.js';
-import type { DQRule, RuleSet } from '../types.js';
+import type { DQRule } from '../types.js';
 
 function generateId(): string {
   return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
@@ -19,17 +18,13 @@ function conditionLabel(rule: DQRule): string {
 }
 
 export function initDQRulesPanel(): void {
-  const rulesList = document.getElementById('dq-rules-list') as HTMLDivElement;
-  const ruleCount = document.getElementById('rule-count') as HTMLSpanElement;
-  const addForm = document.getElementById('add-rule-form') as HTMLFormElement;
-  const ruleNameInput = document.getElementById('rule-name') as HTMLInputElement;
-  const rulePatternInput = document.getElementById('rule-pattern') as HTMLInputElement;
-  const ruleConditionSelect = document.getElementById('rule-condition') as HTMLSelectElement;
-  const ruleExpectedCount = document.getElementById('rule-expected-count') as HTMLInputElement;
-  const savedSetsList = document.getElementById('saved-sets-list') as HTMLDivElement;
-  const rulesetNameInput = document.getElementById('ruleset-name') as HTMLInputElement;
-  const btnSaveRuleset = document.getElementById('btn-save-ruleset') as HTMLButtonElement;
-  const storageErrorDiv = document.getElementById('storage-error') as HTMLDivElement;
+  const rulesList           = document.getElementById('dq-rules-list')       as HTMLDivElement;
+  const ruleCount           = document.getElementById('rule-count')          as HTMLSpanElement;
+  const addForm             = document.getElementById('add-rule-form')        as HTMLFormElement;
+  const ruleNameInput       = document.getElementById('rule-name')            as HTMLInputElement;
+  const rulePatternInput    = document.getElementById('rule-pattern')         as HTMLInputElement;
+  const ruleConditionSelect = document.getElementById('rule-condition')       as HTMLSelectElement;
+  const ruleExpectedCount   = document.getElementById('rule-expected-count')  as HTMLInputElement;
 
   // Show/hide expectedCount input based on condition
   ruleConditionSelect?.addEventListener('change', () => {
@@ -55,37 +50,6 @@ export function initDQRulesPanel(): void {
     addForm.reset();
     ruleExpectedCount.style.display = 'none';
   });
-
-  // Save rule set
-  btnSaveRuleset?.addEventListener('click', () => {
-    const name = rulesetNameInput.value.trim();
-    if (!name) return;
-    const state = getState();
-    const set: RuleSet = {
-      id: generateId(),
-      name,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      rules: [...state.rules],
-    };
-    try {
-      const updated = RuleSetStorage.upsert(set);
-      setSavedRuleSets(updated);
-      setStorageError(null);
-      rulesetNameInput.value = '';
-    } catch (e) {
-      if (e instanceof StorageError) {
-        setStorageError(e.message);
-      }
-    }
-  });
-
-  // Load initial saved sets from storage
-  try {
-    setSavedRuleSets(RuleSetStorage.load());
-  } catch {
-    setSavedRuleSets([]);
-  }
 
   // Subscribe to state for re-rendering
   subscribe((state) => {
@@ -124,54 +88,6 @@ export function initDQRulesPanel(): void {
       }
 
       if (ruleCount) ruleCount.textContent = state.rules.length ? `(${state.rules.length})` : '';
-    }
-
-    // Render saved sets
-    if (savedSetsList) {
-      if (state.savedRuleSets.length === 0) {
-        savedSetsList.innerHTML = '<div style="font-size:11px;color:var(--text-muted)">No saved rule sets.</div>';
-      } else {
-        savedSetsList.innerHTML = state.savedRuleSets.map(set => `
-          <div class="saved-set-item" role="listitem">
-            <span class="saved-set-name" title="${set.name}">${set.name}</span>
-            <span class="saved-set-count">${set.rules.length} rule${set.rules.length !== 1 ? 's' : ''}</span>
-            <button class="btn-sm btn-load-set" data-set-id="${set.id}" aria-label="Load ${set.name}">Load</button>
-            <button class="btn-sm btn-delete-set danger" data-set-id="${set.id}" aria-label="Delete ${set.name}">✕</button>
-          </div>`).join('');
-
-        // Wire load buttons
-        savedSetsList.querySelectorAll<HTMLButtonElement>('.btn-load-set').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const id = btn.dataset['setId'];
-            if (!id) return;
-            const set = state.savedRuleSets.find(s => s.id === id);
-            if (!set) return;
-            const hasRules = getState().rules.length > 0;
-            if (hasRules && !confirm(`Replace current ${getState().rules.length} rule(s) with "${set.name}"?`)) return;
-            setRulesFromSet(set.rules);
-          });
-        });
-
-        // Wire delete set buttons
-        savedSetsList.querySelectorAll<HTMLButtonElement>('.btn-delete-set').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const id = btn.dataset['setId'];
-            if (!id) return;
-            try {
-              const updated = RuleSetStorage.remove(id);
-              setSavedRuleSets(updated);
-              setStorageError(null);
-            } catch (e) {
-              if (e instanceof StorageError) setStorageError(e.message);
-            }
-          });
-        });
-      }
-    }
-
-    // Show storage error
-    if (storageErrorDiv) {
-      storageErrorDiv.textContent = state.storageError ?? '';
     }
   });
 }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RegEx DQ Visualizer</title>
+    <title>SpecifyDQ — RegEx Data Quality Visualizer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -11,7 +11,18 @@
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
-    <button id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+
+    <!-- ── Global App Header ─────────────────────────────────────────── -->
+    <header id="app-header" role="banner">
+      <div class="app-header-brand">
+        <span class="app-header-logo" aria-hidden="true">◈</span>
+        <span class="app-header-name">SpecifyDQ</span>
+        <span class="app-header-tagline">RegEx Data Quality Visualizer</span>
+      </div>
+      <div class="app-header-actions">
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+      </div>
+    </header>
 
     <div id="app">
       <!-- LEFT COLUMN: regex pane (top) + data pane (bottom) -->
@@ -100,19 +111,6 @@
 
           <!-- Example Patterns Panel -->
           <div id="examples-panel"></div>
-
-          <!-- Rule Sets -->
-          <div class="rule-sets-section">
-            <h3>Rule Sets</h3>
-            <div class="save-ruleset-row">
-              <input type="text" id="ruleset-name" placeholder="Rule set name…" maxlength="100" aria-label="Rule set name" />
-              <button id="btn-save-ruleset" type="button">Save</button>
-            </div>
-            <div id="storage-error" class="storage-error" role="alert" aria-live="polite"></div>
-            <div class="saved-sets-list" id="saved-sets-list" role="list" aria-label="Saved rule sets">
-              <!-- Saved set items injected by DQRulesPanel.ts -->
-            </div>
-          </div>
 
         </div><!-- /dq-panel-body -->
 
