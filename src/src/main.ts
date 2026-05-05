@@ -5,6 +5,8 @@ import { initRegexInputPanel } from './ui/RegexInputPanel.js';
 import { initDataPane } from './ui/DataPane.js';
 import { initDQRulesPanel } from './ui/DQRulesPanel.js';
 import { initExamplesPanel } from './ui/ExamplesPanel.js';
+import { initRegexQuickRef } from './ui/RegexQuickRef.js';
+import { initInputStatsPanel } from './ui/InputStatsPanel.js';
 
 // ─── Theme Toggle ─────────────────────────────────────────────────────────────
 const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
@@ -20,6 +22,8 @@ initRegexInputPanel();
 initDataPane();
 initDQRulesPanel();
 initExamplesPanel();
+initRegexQuickRef();
+initInputStatsPanel();
 
 // ─── Global state subscription (panels subscribe internally) ──────────────────
 // Exported for panels to call — each panel also subscribes directly in its init.
