@@ -2,7 +2,8 @@
 
 **Feature Branch**: `001-vizex`
 **Created**: 2026-04-30
-**Status**: Draft
+**Status**: Active — v1.0 implemented; post-v1 enhancements in progress
+**Last Updated**: 2026-05-05
 **Input**: User description: "build a tool where you paste a raw data string (like a SAP HANA log or a dirty CSV row) and write a Regex pattern. The UI should highlight matches in real-time and show Pass/Fail indicators based on DQ rules you define."
 
 ## User Scenarios & Testing *(mandatory)*
@@ -149,3 +150,52 @@ correctly against a new test string.
 - Multi-line mode behavior (whether `.` matches newlines, `^`/`$` per-line vs. full string) is user-configurable via inline flag toggles (`i`, `m`, `s`) in the top pane, defaulting to all flags off (full-string, case-sensitive, dotAll off).
 - No user authentication or access control is required — the tool is for internal developer/analyst use only.
 - The tool is desktop-browser-first; mobile/tablet layout is a nice-to-have but not a v1 requirement.
+
+---
+
+## Post-v1 Enhancements *(implemented 2026-05-05)*
+
+### User Story 4 — File Upload & Data Clear (Priority: P2)
+
+A data engineer can upload a plain-text file (.txt, .csv, .log, .json, .tsv, .md) directly
+into the data pane instead of manually pasting content. A clear button resets the data pane
+to empty in one click.
+
+**Acceptance Scenarios**:
+1. **Given** the user clicks Upload and selects a supported file, **When** the file loads, **Then** its contents appear in the data pane and regex evaluation runs immediately.
+2. **Given** data is present in the pane, **When** the user clicks Clear, **Then** the pane is emptied and all highlights and stats reset.
+
+---
+
+### User Story 5 — Regex Quick Reference (Priority: P3)
+
+A user who is not a regex expert can expand a collapsible cheat sheet below the pattern
+input to browse common regex tokens grouped by category. Clicking any token inserts it
+at the cursor position in the pattern input and immediately re-evaluates.
+
+**Acceptance Scenarios**:
+1. **Given** the cheat sheet is collapsed, **When** the user clicks the summary, **Then** the token groups expand.
+2. **Given** the cheat sheet is open, **When** the user clicks a token chip, **Then** the token is inserted at the cursor in the pattern input and highlights update.
+
+---
+
+### User Story 6 — Input Statistics Panel (Priority: P3)
+
+A data analyst can view live statistics about the data currently in the data pane,
+including total lines, characters, non-empty rows, matched rows, and a colour-coded
+match density progress bar.
+
+**Acceptance Scenarios**:
+1. **Given** no input, **When** the panel is visible, **Then** all values show `—`.
+2. **Given** input and a valid pattern, **When** either changes, **Then** stats update in real-time including the density bar colour (green ≥80%, amber 40–79%, red <40%).
+
+---
+
+### User Story 7 — VizEx Branding & App Header (Priority: P4)
+
+The application has a persistent header with the VizEx brand name, a two-tone gradient
+wordmark, and a dark/light theme toggle accessible from the header at all times.
+
+**Acceptance Scenarios**:
+1. **Given** the app is open, **When** the user clicks the theme toggle, **Then** the UI switches between light and dark mode.
+2. **Given** the app is open, **Then** the VizEx name and tagline are visible in the header at all times.
