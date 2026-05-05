@@ -1,7 +1,7 @@
 # Implementation Plan: VizEx — Regex Data Quality Visualizer
 
-**Branch**: `001-regex-dq-visualizer` | **Date**: 2026-04-30 | **Spec**: [spec.md](spec.md)
-**Input**: Feature specification from `/specs/001-regex-dq-visualizer/spec.md`
+**Branch**: `001-vizex` | **Date**: 2026-04-30 | **Spec**: [spec.md](spec.md)
+**Input**: Feature specification from `/specs/001-vizex/spec.md`
 
 ## Summary
 
@@ -33,7 +33,7 @@ match-count-equals) with live Pass/Fail/Error badges. Rule sets are persisted to
 | I. Specification-First | ✅ Pass | spec.md complete and clarified before this plan |
 | II. AI-Assisted, Human-Approved | ✅ Pass | Spec and plan AI-generated; human review required before tasks |
 | III. Test-First | ✅ Pass | Vitest unit + Playwright visual tests defined before implementation; tests written first per TDD |
-| IV. Git Discipline | ✅ Pass | Branch `001-regex-dq-visualizer` active; artifacts committed before implementation |
+| IV. Git Discipline | ✅ Pass | Branch `001-vizex` active; artifacts committed before implementation |
 | V. Simplicity & YAGNI | ✅ Pass | Vanilla TS + Vite; no framework; no server; no complex state library |
 
 **Post-design re-check**: All gates still pass. No complexity violations to justify.
@@ -43,7 +43,7 @@ match-count-equals) with live Pass/Fail/Error badges. Rule sets are persisted to
 ### Documentation (this feature)
 
 ```text
-specs/001-regex-dq-visualizer/
+specs/001-vizex/
 ├── plan.md              # This file
 ├── spec.md              # Feature specification
 ├── research.md          # Phase 0 output

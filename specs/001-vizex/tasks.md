@@ -1,6 +1,6 @@
 # Tasks: VizEx — Regex Data Quality Visualizer
 
-**Input**: Design documents from `/specs/001-regex-dq-visualizer/`
+**Input**: Design documents from `/specs/001-vizex/`
 
 ---
 

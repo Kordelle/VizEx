@@ -1,6 +1,6 @@
 # Research: VizEx — Regex Data Quality Visualizer
 
-**Feature**: `001-regex-dq-visualizer`
+**Feature**: `001-vizex`
 **Date**: 2026-04-30
 
 ---

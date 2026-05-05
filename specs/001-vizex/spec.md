@@ -1,6 +1,6 @@
 # Feature Specification: VizEx — Regex Data Quality Visualizer
 
-**Feature Branch**: `001-regex-dq-visualizer`
+**Feature Branch**: `001-vizex`
 **Created**: 2026-04-30
 **Status**: Draft
 **Input**: User description: "build a tool where you paste a raw data string (like a SAP HANA log or a dirty CSV row) and write a Regex pattern. The UI should highlight matches in real-time and show Pass/Fail indicators based on DQ rules you define."
