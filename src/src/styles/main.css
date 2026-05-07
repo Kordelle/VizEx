@@ -437,9 +437,10 @@ html, body {
 
 .dq-panel-body {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 .dq-rules-list {
@@ -448,8 +449,6 @@ html, body {
   flex-direction: column;
   gap: var(--sp-1);
   flex-shrink: 0;
-  max-height: 180px;
-  overflow-y: auto;
 }
 
 .dq-rule-item {
@@ -923,7 +922,7 @@ html, body {
 /* ─── Match Details Panel ────────────────────────────────────────────────── */
 #match-details-panel {
   border-top: 1px solid var(--border-color);
-  flex: 1 1 0;
+  flex-shrink: 0;
   min-height: 120px;
   overflow-y: auto;
 }
