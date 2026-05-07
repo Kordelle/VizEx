@@ -1,4 +1,4 @@
-import { subscribe } from '../state.js';
+import { subscribe, getState } from '../state.js';
 import type { AppState } from '../state.js';
 import type { MatchSpan } from '../types.js';
 
@@ -9,32 +9,26 @@ function truncate(text: string, max = 80): string {
   return text.slice(0, max) + '…';
 }
 
-function buildDetailsHTML(state: AppState): string {
+function buildBodyHTML(state: AppState): string {
   const result = state.matchResult;
 
   if (!state.pattern.raw) {
-    return '<p class="mdet-empty">Enter a pattern to see match details.</p>';
+    return '<tr><td class="mdet-empty" colspan="4">Enter a pattern to see match details.</td></tr>';
   }
 
   if (state.patternErrorMessage) {
-    return `<p class="mdet-empty mdet-error">Pattern error — no matches.</p>`;
+    return '<tr><td class="mdet-empty mdet-error" colspan="4">Pattern error — no matches.</td></tr>';
   }
 
   if (!result || result.spans.length === 0) {
-    if (state.rawInput) {
-      return '<p class="mdet-empty">No matches found.</p>';
-    }
-    return '<p class="mdet-empty">Paste input data to see match details.</p>';
+    const msg = state.rawInput ? 'No matches found.' : 'Paste input data to see match details.';
+    return `<tr><td class="mdet-empty" colspan="4">${msg}</td></tr>`;
   }
 
-  // Only full-match spans (groupIndex === 0) are shown as rows;
-  // capture groups for the same match are nested inside.
   const fullMatches = result.spans.filter(s => s.groupIndex === 0);
   const displayed = fullMatches.slice(0, MAX_DISPLAY);
   const overLimit = fullMatches.length > MAX_DISPLAY;
 
-  // Build a map from start offset → capture group spans for quick lookup
-  // (groupIndex > 0 and same parent range)
   const groupMap = new Map<number, MatchSpan[]>();
   result.spans.filter(s => s.groupIndex > 0).forEach(s => {
     if (!groupMap.has(s.start)) groupMap.set(s.start, []);
@@ -61,9 +55,13 @@ function buildDetailsHTML(state: AppState): string {
   }).join('');
 
   const overflow = overLimit
-    ? `<p class="mdet-overflow">Showing first ${MAX_DISPLAY} of ${result.totalMatchCount.toLocaleString()} matches.</p>`
+    ? `<tr><td class="mdet-overflow" colspan="4">Showing first ${MAX_DISPLAY} of ${result.totalMatchCount.toLocaleString()} matches.</td></tr>`
     : '';
 
+  return rows + overflow;
+}
+
+function buildDetailsHTML(state: AppState): string {
   return `
     <table class="mdet-table" aria-label="Match details">
       <thead>
@@ -74,9 +72,8 @@ function buildDetailsHTML(state: AppState): string {
           <th>Length</th>
         </tr>
       </thead>
-      <tbody>${rows}</tbody>
-    </table>
-    ${overflow}`;
+      <tbody>${buildBodyHTML(state)}</tbody>
+    </table>`;
 }
 
 function escHtml(s: string): string {
@@ -90,6 +87,9 @@ function escHtml(s: string): string {
 export function initMatchDetailsPanel(): void {
   const container = document.getElementById('match-details-panel') as HTMLDivElement | null;
   if (!container) return;
+
+  // Render immediately so the header and placeholder are visible on page load
+  container.innerHTML = buildDetailsHTML(getState());
 
   subscribe((state: AppState) => {
     container.innerHTML = buildDetailsHTML(state);
