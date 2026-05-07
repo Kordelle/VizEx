@@ -131,4 +131,4 @@ All features begin with a written spec → plan → tasks before any implementat
 
 ## License
 
-Private repository — © Kordelle
+MIT © [Kordelle](https://github.com/Kordelle)
