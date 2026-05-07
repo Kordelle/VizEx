@@ -437,7 +437,7 @@ html, body {
 
 .dq-panel-body {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -449,6 +449,8 @@ html, body {
   flex-direction: column;
   gap: var(--sp-1);
   flex-shrink: 0;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .dq-rule-item {
@@ -612,6 +614,7 @@ html, body {
 /* ─── Examples Panel ─────────────────────────────────────────────────────── */
 #examples-panel {
   border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 
 .examples-details {
@@ -922,8 +925,8 @@ html, body {
 /* ─── Match Details Panel ────────────────────────────────────────────────── */
 #match-details-panel {
   border-top: 1px solid var(--border-color);
-  flex-shrink: 0;
-  min-height: 120px;
+  flex: 1 1 0;
+  min-height: 0;
   overflow-y: auto;
 }
 
