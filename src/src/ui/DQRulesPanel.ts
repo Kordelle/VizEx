@@ -1,4 +1,4 @@
-import { dispatch, subscribe } from '../state.js';
+import { dispatch, subscribe, getState } from '../state.js';
 import { evaluateRule } from '../engine/evaluateRule.js';
 import type { DQRule } from '../types.js';
 
@@ -52,11 +52,9 @@ export function initDQRulesPanel(): void {
   });
 
   // Subscribe to state for re-rendering
-  subscribe((state) => {
-    // Evaluate all rules for rendering — results stay local, not written back to state
+  const renderRules = (state: Parameters<Parameters<typeof subscribe>[0]>[0]) => {
     const results = state.rules.map(r => evaluateRule(r, state.rawInput));
 
-    // Render rule list
     if (rulesList) {
       if (state.rules.length === 0) {
         rulesList.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px">No rules defined yet.</div>';
@@ -77,7 +75,6 @@ export function initDQRulesPanel(): void {
             </div>`;
         }).join('');
 
-        // Wire delete buttons
         rulesList.querySelectorAll<HTMLButtonElement>('.btn-delete').forEach(btn => {
           btn.addEventListener('click', () => {
             const id = btn.dataset['ruleId'];
@@ -88,5 +85,12 @@ export function initDQRulesPanel(): void {
 
       if (ruleCount) ruleCount.textContent = state.rules.length ? `(${state.rules.length})` : '';
     }
+  };
+
+  // Render immediately so "No rules defined yet." is visible on page load
+  renderRules(getState());
+
+  subscribe((state) => {
+    renderRules(state);
   });
 }
