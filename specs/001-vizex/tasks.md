@@ -223,3 +223,22 @@
 - [ ] T125 Update plan.md — add Phase 14 modules to project structure
 - [ ] T126 Update ui-contract.md — add MatchDetailsPanel + permalink contracts
 - [ ] T127 Update quickstart.md — add Vercel deploy steps
+
+---
+
+## Phase 16: v1 Feature Parity
+
+### Phase 16a: Substitution Panel (Feature A)
+- [x] T128 Add substitution input to index.html below data pane toolbar
+- [x] T129 Create src/ui/SubstitutionPanel.ts — live replace preview using String.prototype.replaceAll with pattern + replacement string; support $& $1–$9 $` $' backrefs
+- [x] T130 Wire initSubstitutionPanel() in main.ts
+- [x] T131 Add .sub-* CSS to main.css
+
+### Phase 16b: Cursor Position Readout (Feature B)
+- [x] T132 Add #cursor-pos span to data pane toolbar in index.html
+- [x] T133 Track selectionchange / click / keyup on raw-input; compute Ln/Col from caret offset; update #cursor-pos
+
+### Phase 16c: Match Navigation (Feature C)
+- [x] T134 Add Prev / Next buttons to data pane toolbar in index.html
+- [x] T135 Implement match navigation in DataPane.ts — track active match index, scroll caret to match start, highlight active match with distinct CSS class
+- [x] T136 Add .mark-active CSS to main.css for the focused match highlight

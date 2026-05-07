@@ -65,7 +65,11 @@
             <span id="no-matches-indicator" aria-live="polite"></span>
             <span id="match-count" aria-live="polite"></span>
             <span class="toolbar-spacer"></span>
+            <span id="cursor-pos" aria-label="Cursor position" title="Cursor line and column">Ln 1, Col 1</span>
             <span id="timing-readout" aria-label="Evaluation time"></span>
+            <div class="toolbar-divider"></div>
+            <button id="btn-match-prev" class="btn-toolbar" title="Jump to previous match" aria-label="Previous match" disabled>‹ Prev</button>
+            <button id="btn-match-next" class="btn-toolbar" title="Jump to next match" aria-label="Next match" disabled>Next ›</button>
             <div class="toolbar-divider"></div>
             <label id="btn-upload" class="btn-toolbar" title="Upload a text file (.txt, .csv, .log, .json)" aria-label="Upload file">
               ↑ Upload
@@ -88,6 +92,26 @@
               data-placeholder="Paste raw data here (log line, CSV row, JSON fragment…)"
             ></div>
           </div>
+        </section>
+
+        <!-- SUBSTITUTION PANE: SubstitutionPanel -->
+        <section id="sub-pane" aria-label="Substitution">
+          <div class="sub-pane-toolbar">
+            <span class="sub-pane-label">Substitution</span>
+            <span class="toolbar-spacer"></span>
+            <button id="btn-sub-copy" class="btn-toolbar" title="Copy substituted output to clipboard" aria-label="Copy output">⎘ Copy</button>
+          </div>
+          <div class="sub-input-row">
+            <input
+              id="sub-input"
+              type="text"
+              placeholder="Replacement string… ($& full match, $1 group 1, $` before, $' after)"
+              spellcheck="false"
+              autocomplete="off"
+              aria-label="Replacement string"
+            />
+          </div>
+          <div id="sub-output" class="sub-output" aria-label="Substitution output" aria-live="polite"></div>
         </section>
 
       </div><!-- /left-column -->
