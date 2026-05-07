@@ -130,5 +130,6 @@ export function setPatternError(message: string | null): void {
 }
 
 export function setMatchResult(result: MatchResult | null): void {
+  if (state.matchResult === result) return;
   setState({ matchResult: result });
 }

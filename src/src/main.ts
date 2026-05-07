@@ -82,6 +82,7 @@ if (rawHash) {
 }
 
 // On state change: update URL hash (debounced)
+const PERMALINK_DATA_LIMIT = 10_000; // chars — skip encoding large inputs
 let hashTimer: ReturnType<typeof setTimeout>;
 subscribe((state) => {
   clearTimeout(hashTimer);
@@ -92,8 +93,13 @@ subscribe((state) => {
       m: state.pattern.flags.multiline,
       s: state.pattern.flags.dotAll,
       u: state.pattern.flags.unicode,
-      d: state.rawInput,
+      d: state.rawInput.length <= PERMALINK_DATA_LIMIT ? state.rawInput : '',
     };
+    // If there's nothing meaningful to encode, clear the hash
+    if (!payload.p && !payload.d) {
+      history.replaceState(null, '', window.location.pathname);
+      return;
+    }
     const encoded = encodePermalink(payload);
     history.replaceState(null, '', `#${encoded}`);
   }, 500);
