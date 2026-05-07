@@ -166,6 +166,9 @@
 - [x] T096 Add search input to ExamplesPanel.ts — filters example list by name/pattern live
 - [x] T097 Add search input CSS to main.css
 
+### Phase 12b: Input Stats Panel Bug Fix
+- [x] T101 Rewrite InputStatsPanel.ts — replace stale element-reference pattern with re-render on each state update
+
 ---
 
 ## Phase 13: Docs Catch-up

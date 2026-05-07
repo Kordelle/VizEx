@@ -82,7 +82,11 @@ export function initDataPane(): void {
   rawInput.addEventListener('paste', (e) => {
     e.preventDefault();
     const text = e.clipboardData?.getData('text/plain') ?? '';
+    // Insert at cursor position; execCommand is deprecated but still widely supported
+    // for this use case. We dispatch INPUT_CHANGE explicitly because execCommand
+    // does not reliably fire the 'input' event in modern browsers.
     document.execCommand('insertText', false, text);
+    dispatch({ type: 'INPUT_CHANGE', payload: { rawInput: rawInput.textContent ?? '' } });
   });
 
   // ── File upload ───────────────────────────────────────────────────────────

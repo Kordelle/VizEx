@@ -1,4 +1,4 @@
-import { dispatch, subscribe, setRuleResults } from '../state.js';
+import { dispatch, subscribe } from '../state.js';
 import { evaluateRule } from '../engine/evaluateRule.js';
 import type { DQRule } from '../types.js';
 
@@ -53,9 +53,8 @@ export function initDQRulesPanel(): void {
 
   // Subscribe to state for re-rendering
   subscribe((state) => {
-    // Evaluate all rules
+    // Evaluate all rules for rendering — results stay local, not written back to state
     const results = state.rules.map(r => evaluateRule(r, state.rawInput));
-    setRuleResults(results);
 
     // Render rule list
     if (rulesList) {
