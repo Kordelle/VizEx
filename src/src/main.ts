@@ -1,6 +1,6 @@
 import './styles/main.css';
 import './styles/palette.css';
-import { subscribe, dispatch } from './state.js';
+import { subscribe } from './state.js';
 import { initRegexInputPanel } from './ui/RegexInputPanel.js';
 import { initDataPane } from './ui/DataPane.js';
 import { initDQRulesPanel } from './ui/DQRulesPanel.js';
@@ -34,76 +34,10 @@ btnExport?.addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
-// ─── Permalink (URL hash encode/decode) ──────────────────────────────────────
-interface PermalinkPayload {
-  p: string;   // pattern raw
-  i: boolean;  // caseInsensitive
-  m: boolean;  // multiline
-  s: boolean;  // dotAll
-  u: boolean;  // unicode
-  d: string;   // raw input data
+// ─── Clear stale permalink hashes from prior versions ────────────────────────
+if (window.location.hash) {
+  history.replaceState(null, '', window.location.pathname);
 }
-
-function encodePermalink(payload: PermalinkPayload): string {
-  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-}
-
-function decodePermalink(hash: string): PermalinkPayload | null {
-  try {
-    return JSON.parse(decodeURIComponent(escape(atob(hash)))) as PermalinkPayload;
-  } catch {
-    return null;
-  }
-}
-
-// On load: restore state from hash if present
-const rawHash = window.location.hash.slice(1);
-if (rawHash) {
-  const payload = decodePermalink(rawHash);
-  if (payload) {
-    // Defer until after panels init so subscribers are ready
-    window.addEventListener('DOMContentLoaded', () => {
-      const patternInput = document.getElementById('pattern-input') as HTMLInputElement | null;
-      const rawInputDiv = document.getElementById('raw-input') as HTMLDivElement | null;
-      if (patternInput) {
-        patternInput.value = payload.p;
-        dispatch({ type: 'PATTERN_CHANGE', payload: { raw: payload.p } });
-      }
-      if (payload.i) dispatch({ type: 'FLAGS_TOGGLE', payload: { flag: 'caseInsensitive' } });
-      if (payload.m) dispatch({ type: 'FLAGS_TOGGLE', payload: { flag: 'multiline' } });
-      if (payload.s) dispatch({ type: 'FLAGS_TOGGLE', payload: { flag: 'dotAll' } });
-      if (payload.u) dispatch({ type: 'FLAGS_TOGGLE', payload: { flag: 'unicode' } });
-      if (rawInputDiv && payload.d) {
-        rawInputDiv.textContent = payload.d;
-        dispatch({ type: 'INPUT_CHANGE', payload: { rawInput: payload.d } });
-      }
-    }, { once: true });
-  }
-}
-
-// On state change: update URL hash (debounced)
-const PERMALINK_DATA_LIMIT = 10_000; // chars — skip encoding large inputs
-let hashTimer: ReturnType<typeof setTimeout>;
-subscribe((state) => {
-  clearTimeout(hashTimer);
-  hashTimer = setTimeout(() => {
-    const payload: PermalinkPayload = {
-      p: state.pattern.raw,
-      i: state.pattern.flags.caseInsensitive,
-      m: state.pattern.flags.multiline,
-      s: state.pattern.flags.dotAll,
-      u: state.pattern.flags.unicode,
-      d: state.rawInput.length <= PERMALINK_DATA_LIMIT ? state.rawInput : '',
-    };
-    // If there's nothing meaningful to encode, clear the hash
-    if (!payload.p && !payload.d) {
-      history.replaceState(null, '', window.location.pathname);
-      return;
-    }
-    const encoded = encodePermalink(payload);
-    history.replaceState(null, '', `#${encoded}`);
-  }, 500);
-});
 
 // ─── Cursor Position Readout ─────────────────────────────────────────────────
 const cursorPos = document.getElementById('cursor-pos') as HTMLSpanElement | null;
