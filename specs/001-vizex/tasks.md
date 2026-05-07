@@ -189,7 +189,7 @@
 ### Phase 14a: Permalink / Share via URL Hash (Feature B)
 - [x] T105 Encode pattern + flags + raw input into URL hash on every state change
 - [x] T106 Decode URL hash on page load and pre-populate state
-- [x] T107 Add "Copy link" button to header that copies current URL to clipboard
+- [x] T107 ~~Add "Copy link" button to header~~ — removed (redundant, URL updates automatically)
 
 ### Phase 14b: Match Details Panel (Feature A)
 - [x] T108 Create src/ui/MatchDetailsPanel.ts — list each match: value, index, length, captured groups

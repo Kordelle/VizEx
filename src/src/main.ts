@@ -98,16 +98,6 @@ subscribe((state) => {
   }, 500);
 });
 
-// Copy link button
-const btnCopyLink = document.getElementById('btn-copy-link') as HTMLButtonElement | null;
-btnCopyLink?.addEventListener('click', () => {
-  navigator.clipboard.writeText(window.location.href).then(() => {
-    const prev = btnCopyLink.textContent ?? '';
-    btnCopyLink.textContent = '✓ Copied!';
-    setTimeout(() => { btnCopyLink.textContent = prev; }, 1500);
-  });
-});
-
 // ─── Init UI Panels ───────────────────────────────────────────────────────────
 initRegexInputPanel();
 initDataPane();

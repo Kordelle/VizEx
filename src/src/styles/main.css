@@ -573,8 +573,7 @@ html, body {
 
 /* ─── Theme Toggle (inside header) ───────────────────────────────────────── */
 #theme-toggle,
-#btn-export,
-#btn-copy-link {
+#btn-export {
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 500;
@@ -588,8 +587,7 @@ html, body {
   box-shadow: var(--shadow-sm);
 }
 #theme-toggle:hover,
-#btn-export:hover,
-#btn-copy-link:hover { background: var(--bg-hover); box-shadow: var(--shadow-md); }
+#btn-export:hover { background: var(--bg-hover); box-shadow: var(--shadow-md); }
 
 .header-link {
   display: inline-flex;
