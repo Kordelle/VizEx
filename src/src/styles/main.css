@@ -572,7 +572,8 @@ html, body {
 }
 
 /* ─── Theme Toggle (inside header) ───────────────────────────────────────── */
-#theme-toggle {
+#theme-toggle,
+#btn-export {
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 500;
@@ -585,7 +586,27 @@ html, body {
   transition: background 0.12s, box-shadow 0.12s;
   box-shadow: var(--shadow-sm);
 }
-#theme-toggle:hover { background: var(--bg-hover); box-shadow: var(--shadow-md); }
+#theme-toggle:hover,
+#btn-export:hover { background: var(--bg-hover); box-shadow: var(--shadow-md); }
+
+.header-link {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.12s, box-shadow 0.12s;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+.header-link:hover { background: var(--bg-hover); box-shadow: var(--shadow-md); }
 
 /* ─── Examples Panel ─────────────────────────────────────────────────────── */
 #examples-panel {

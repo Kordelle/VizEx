@@ -17,6 +17,21 @@ themeToggle?.addEventListener('click', () => {
   themeToggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
 });
 
+// ─── Export Button ────────────────────────────────────────────────────────────
+const btnExport = document.getElementById('btn-export') as HTMLButtonElement | null;
+btnExport?.addEventListener('click', () => {
+  const rawInput = document.getElementById('raw-input') as HTMLDivElement | null;
+  const text = rawInput?.textContent ?? '';
+  if (!text.trim()) return;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `vizex-export-${new Date().toISOString().slice(0, 10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
 // ─── Init UI Panels ───────────────────────────────────────────────────────────
 initRegexInputPanel();
 initDataPane();

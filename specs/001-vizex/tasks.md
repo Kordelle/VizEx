@@ -169,6 +169,11 @@
 ### Phase 12b: Input Stats Panel Bug Fix
 - [x] T101 Rewrite InputStatsPanel.ts — replace stale element-reference pattern with re-render on each state update
 
+### Phase 12c: Header Actions — GitHub Link + Export
+- [x] T102 Add GitHub star link to app header (index.html + CSS)
+- [x] T103 Add Export button to app header — downloads data pane content as .txt file (main.ts)
+- [x] T104 Add Report Issue link to app header — links to GitHub Issues
+
 ---
 
 ## Phase 13: Docs Catch-up
@@ -176,3 +181,45 @@
 - [x] T098 Update plan.md — fix tech versions, constitution table, project structure
 - [x] T099 Update ui-contract.md — remove rule sets, add header/QuickRef/InputStats/Examples, fix debounce
 - [x] T100 Update quickstart.md — fix project structure, remove stale constitution III ref, fix test commands
+
+---
+
+## Phase 14: Pre-Deploy Polish
+
+### Phase 14a: Permalink / Share via URL Hash (Feature B)
+- [ ] T105 Encode pattern + flags + raw input into URL hash on every state change
+- [ ] T106 Decode URL hash on page load and pre-populate state
+- [ ] T107 Add "Copy link" button to header that copies current URL to clipboard
+
+### Phase 14b: Match Details Panel (Feature A)
+- [ ] T108 Create src/ui/MatchDetailsPanel.ts — list each match: value, index, length, captured groups
+- [ ] T109 Add #match-details-panel anchor div to index.html
+- [ ] T110 Wire initMatchDetailsPanel() in main.ts
+- [ ] T111 Add .match-details-* CSS to main.css
+
+### Phase 14c: `u` Flag Toggle (Feature D)
+- [ ] T112 Add `u` (Unicode) toggle button to RegexInputPanel.ts alongside i/m/s toggles
+- [ ] T113 Update state.ts flags type to include `u`
+- [ ] T114 Update resolveMatches.ts to pass `u` flag to RegExp constructor
+
+### Phase 14d: Inline Regex Error Display (Feature E)
+- [ ] T115 Show regex parse error text inline below the pattern input (not just badge)
+- [ ] T116 Add .pattern-error CSS for red error message beneath input
+
+### Phase 14e: Housekeeping (Features G–J)
+- [ ] T117 Add src/coverage/ to .gitignore and remove from git tracking
+- [ ] T118 Add <meta name="description"> and update <title> in index.html for SEO
+- [ ] T119 Add public/robots.txt
+- [ ] T120 Commit T102–T104 header action changes (Export, GitHub, Issues)
+- [ ] T121 Merge 001-vizex → main via PR (replaces T069)
+- [ ] T122 Tag v1.0.0 on main (replaces T070)
+- [ ] T123 Set GitHub repo to public
+- [ ] T124 Deploy to Vercel and verify production build
+
+---
+
+## Phase 15: Docs Catch-up (post-Phase 14)
+
+- [ ] T125 Update plan.md — add Phase 14 modules to project structure
+- [ ] T126 Update ui-contract.md — add MatchDetailsPanel + permalink contracts
+- [ ] T127 Update quickstart.md — add Vercel deploy steps
