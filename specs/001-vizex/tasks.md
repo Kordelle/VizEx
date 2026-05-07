@@ -157,3 +157,19 @@
 - [x] T093 Update .specify/feature.json and .github/copilot-instructions.md paths
 - [x] T094 Rename GitHub repo to VizEx; update git remote URL
 - [x] T095 Rename local folder specify_demo → vizex
+
+---
+
+## Phase 12: UX Improvements
+
+### Phase 12a: Example Patterns Search
+- [x] T096 Add search input to ExamplesPanel.ts — filters example list by name/pattern live
+- [x] T097 Add search input CSS to main.css
+
+---
+
+## Phase 13: Docs Catch-up
+
+- [x] T098 Update plan.md — fix tech versions, constitution table, project structure
+- [x] T099 Update ui-contract.md — remove rule sets, add header/QuickRef/InputStats/Examples, fix debounce
+- [x] T100 Update quickstart.md — fix project structure, remove stale constitution III ref, fix test commands

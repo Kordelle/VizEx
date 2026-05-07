@@ -8,23 +8,32 @@
 
 ## Layout Contract
 
-The application MUST render as a single viewport with three always-visible regions:
+The application MUST render as a single viewport with a fixed header and three always-visible panel regions:
 
 ```
-┌─────────────────────────────────────┬─────────────────┐
-│  TOP PANE: RegexInputPanel          │                  │
-│  [pattern input] [i] [m] [s]        │  RIGHT SIDEBAR   │
-│  [error message if invalid]         │  DQRulesPanel    │
-├─────────────────────────────────────│                  │
-│  BOTTOM PANE: DataPane              │  [rule list]     │
-│  [highlighted raw string display]   │  [add rule btn]  │
-│  [no-matches / perf warning banner] │  [rule sets]     │
-└─────────────────────────────────────┴─────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│  APP HEADER: VizEx branding + tagline + theme toggle     │
+├─────────────────────────────────────┬────────────────────┤
+│  LEFT / MAIN COLUMN                 │  RIGHT SIDEBAR     │
+│                                     │                    │
+│  RegexInputPanel                    │  DQRulesPanel      │
+│  [pattern input] [i] [m] [s]        │  [rule list]       │
+│  [error message if invalid]         │  [add rule btn]    │
+│  RegexQuickRef (collapsible)        │                    │
+│                                     │  ExamplesPanel     │
+│  DataPane                           │  [search input]    │
+│  [toolbar: upload | clear | stats]  │  [example list]    │
+│  [highlighted raw string display]   │                    │
+│  [no-matches / perf warning banner] │  InputStatsPanel   │
+│                                     │  [4-stat grid]     │
+│                                     │  [density bar]     │
+└─────────────────────────────────────┴────────────────────┘
 ```
 
-- Pane split is resizable (drag handle between top and bottom panes)
-- Sidebar width is fixed at 320px (resizable in v2)
-- All three regions remain visible without horizontal scrolling at ≥1024px viewport width
+- Header height: 48px fixed; `#app` fills `calc(100vh - 48px)`
+- Sidebar width is fixed at 320px
+- All regions remain visible without horizontal scrolling at ≥1024px viewport width
+- Rule Sets UI was removed in Phase 11c — not present in sidebar
 
 ---
 
@@ -41,6 +50,7 @@ The application MUST render as a single viewport with three always-visible regio
   skips a match if its `index` falls within `[prevStart, prevEnd)`; stores skipped
   matches in `overlappingAlternatives` on the accepted span
 - `groupIndex` 0 = full match; 1–N = named/numbered capture group
+- Hard cap: 2,000 matches per evaluation to protect render performance
 
 **Performance contract**: MUST complete in ≤200ms for inputs ≤10,000 chars;
 MUST complete in ≤1000ms for inputs ≤50,000 chars.
@@ -85,12 +95,47 @@ state directly — they dispatch events to a central state manager.
 
 | Event | Trigger | State mutation | UI effect |
 |-------|---------|---------------|-----------|
-| `pattern:change` | User keystroke in top pane | Updates `state.pattern`; debounce 150ms | Re-runs `resolveMatches`; re-renders highlights |
+| `PATTERN_CHANGE` | User keystroke in pattern input | Updates `state.pattern`; debounce 300ms | Re-runs `resolveMatches`; re-renders highlights |
 | `flags:toggle` | User clicks flag toggle | Updates `state.pattern.flags` | Re-runs `resolveMatches`; re-renders highlights |
-| `input:change` | User edits raw string pane | Updates `state.rawInput`; debounce 150ms | Re-runs `resolveMatches` + all `evaluateRule`; re-renders |
+| `INPUT_CHANGE` | User edits data pane / uploads file / clears | Updates `state.rawInput`; debounce 300ms | Re-runs `resolveMatches` + all `evaluateRule`; re-renders |
 | `rule:add` | User submits new rule form | Appends to `state.rules` | Re-runs `evaluateRule` for new rule; re-renders sidebar |
 | `rule:edit` | User saves rule edit | Replaces rule in `state.rules` | Re-runs `evaluateRule`; re-renders sidebar |
 | `rule:delete` | User confirms delete | Removes from `state.rules` | Re-renders sidebar |
-| `ruleset:save` | User saves rule set | Calls `RuleSetStorage.upsert` | Updates saved list in sidebar |
-| `ruleset:load` | User selects rule set | Replaces `state.rules` | Confirmation if current rules present; re-evaluates all |
-| `ruleset:delete` | User deletes rule set | Calls `RuleSetStorage.remove` | Updates saved list |
+
+---
+
+## Post-v1 Module Contracts
+
+### `initExamplesPanel()`
+
+**Purpose**: Render the built-in pattern library with live search filtering.
+
+**Behaviour**:
+- Renders all example categories and entries from `EXAMPLE_CATEGORIES` on init
+- Search input filters entries by `label`, `description`, or `pattern` (case-insensitive, live on `input` event)
+- Badge updates to show `N / Total patterns` when a filter is active
+- "↗ Pattern" button dispatches `PATTERN_CHANGE` and updates the visible pattern input
+- "↗ Sample" button dispatches `INPUT_CHANGE` and updates the visible data pane
+
+---
+
+### `initRegexQuickRef()`
+
+**Purpose**: Render a collapsible cheat sheet of clickable regex token chips.
+
+**Behaviour**:
+- Rendered as a `<details>` element, collapsed by default
+- Tokens grouped by category (anchors, quantifiers, character classes, groups, lookarounds)
+- Clicking a token chip inserts it at the cursor position in the pattern input and dispatches `PATTERN_CHANGE`
+
+---
+
+### `initInputStatsPanel()`
+
+**Purpose**: Display live statistics about the current data pane contents.
+
+**Behaviour**:
+- Subscribes to state; re-renders on every `INPUT_CHANGE` or `PATTERN_CHANGE`
+- Displays: total lines, total characters, non-empty rows, matched rows
+- Renders a colour-coded match density progress bar: green ≥80%, amber 40–79%, red <40%
+- Shows `—` for all values when input is empty
