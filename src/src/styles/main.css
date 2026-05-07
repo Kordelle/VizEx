@@ -1083,3 +1083,102 @@ mark.mark-active {
 }
 
 .sub-error { color: var(--error-color); }
+
+/* ─── Mobile Layout (≤ 768px) ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Allow the page to scroll naturally on mobile */
+  html, body {
+    height: auto;
+    overflow: auto;
+  }
+
+  /* Stack left column + sidebar vertically; let content set height */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Both columns take full width and shrink-wrap their content */
+  #left-column,
+  #dq-panel {
+    width: 100%;
+    min-width: 0;
+    overflow: visible;
+    border-right: none;
+    border-left: none;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  /* Header: hide tagline + non-essential buttons to save space */
+  .app-header-tagline {
+    display: none;
+  }
+
+  /* Shrink header action buttons */
+  .app-header-actions {
+    gap: var(--sp-1);
+  }
+  #btn-export,
+  #btn-github,
+  #btn-issues,
+  #theme-toggle {
+    font-size: 10px;
+    padding: 3px 7px;
+  }
+
+  /* Data editor: give it a reasonable fixed height so it scrolls internally */
+  .data-editor-wrap {
+    height: 40vh;
+    min-height: 160px;
+  }
+
+  /* Substitution pane: uncap height, let it grow */
+  #sub-pane {
+    max-height: none;
+  }
+
+  /* DQ panel body: allow full height, natural scroll */
+  #dq-panel {
+    overflow: visible;
+  }
+  .dq-panel-body {
+    overflow: visible;
+    height: auto;
+  }
+
+  /* Rules list: uncap so all rules show */
+  .dq-rules-list {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  /* Examples body: uncap so all examples show */
+  .examples-body {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  /* Match details panel: natural height */
+  #match-details-panel {
+    flex: none;
+    height: auto;
+    min-height: 0;
+    overflow-y: visible;
+  }
+
+  /* Toolbar wraps on very narrow screens */
+  .data-pane-toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--sp-1) var(--sp-2);
+    gap: var(--sp-1);
+  }
+
+  /* Flag buttons: slightly tighter on mobile */
+  .flag-btn {
+    padding: 4px 7px;
+  }
+}
