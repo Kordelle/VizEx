@@ -187,30 +187,30 @@
 ## Phase 14: Pre-Deploy Polish
 
 ### Phase 14a: Permalink / Share via URL Hash (Feature B)
-- [ ] T105 Encode pattern + flags + raw input into URL hash on every state change
-- [ ] T106 Decode URL hash on page load and pre-populate state
-- [ ] T107 Add "Copy link" button to header that copies current URL to clipboard
+- [x] T105 Encode pattern + flags + raw input into URL hash on every state change
+- [x] T106 Decode URL hash on page load and pre-populate state
+- [x] T107 Add "Copy link" button to header that copies current URL to clipboard
 
 ### Phase 14b: Match Details Panel (Feature A)
-- [ ] T108 Create src/ui/MatchDetailsPanel.ts — list each match: value, index, length, captured groups
-- [ ] T109 Add #match-details-panel anchor div to index.html
-- [ ] T110 Wire initMatchDetailsPanel() in main.ts
-- [ ] T111 Add .match-details-* CSS to main.css
+- [x] T108 Create src/ui/MatchDetailsPanel.ts — list each match: value, index, length, captured groups
+- [x] T109 Add #match-details-panel anchor div to index.html
+- [x] T110 Wire initMatchDetailsPanel() in main.ts
+- [x] T111 Add .match-details-* CSS to main.css
 
 ### Phase 14c: `u` Flag Toggle (Feature D)
-- [ ] T112 Add `u` (Unicode) toggle button to RegexInputPanel.ts alongside i/m/s toggles
-- [ ] T113 Update state.ts flags type to include `u`
-- [ ] T114 Update resolveMatches.ts to pass `u` flag to RegExp constructor
+- [x] T112 Add `u` (Unicode) toggle button to RegexInputPanel.ts alongside i/m/s toggles
+- [x] T113 Update state.ts flags type to include `u`
+- [x] T114 Update resolveMatches.ts to pass `u` flag to RegExp constructor
 
 ### Phase 14d: Inline Regex Error Display (Feature E)
-- [ ] T115 Show regex parse error text inline below the pattern input (not just badge)
-- [ ] T116 Add .pattern-error CSS for red error message beneath input
+- [x] T115 Show regex parse error text inline below the pattern input (not just badge) — already implemented
+- [x] T116 Add .pattern-error CSS for red error message beneath input — already implemented
 
 ### Phase 14e: Housekeeping (Features G–J)
-- [ ] T117 Add src/coverage/ to .gitignore and remove from git tracking
-- [ ] T118 Add <meta name="description"> and update <title> in index.html for SEO
-- [ ] T119 Add public/robots.txt
-- [ ] T120 Commit T102–T104 header action changes (Export, GitHub, Issues)
+- [x] T117 Add src/coverage/ to .gitignore and remove from git tracking (already ignored, not tracked)
+- [x] T118 Add <meta name="description"> and update <title> in index.html for SEO
+- [x] T119 Add public/robots.txt
+- [x] T120 Commit T102–T104 header action changes (Export, GitHub, Issues)
 - [ ] T121 Merge 001-vizex → main via PR (replaces T069)
 - [ ] T122 Tag v1.0.0 on main (replaces T070)
 - [ ] T123 Set GitHub repo to public

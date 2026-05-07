@@ -1,4 +1,4 @@
-import type { AppAction, DQRule, RegexFlags, RegexPattern, RuleResult, RuleSet } from './types.js';
+import type { AppAction, DQRule, MatchResult, RegexFlags, RegexPattern, RuleResult, RuleSet } from './types.js';
 
 // ─── App State Shape ──────────────────────────────────────────────────────────
 
@@ -10,6 +10,7 @@ export interface AppState {
   savedRuleSets: RuleSet[];
   storageError: string | null;
   patternErrorMessage: string | null;
+  matchResult: MatchResult | null;
 }
 
 // ─── Initial State ────────────────────────────────────────────────────────────
@@ -18,6 +19,7 @@ const initialFlags: RegexFlags = {
   caseInsensitive: false,
   multiline: false,
   dotAll: false,
+  unicode: false,
 };
 
 const initialState: AppState = {
@@ -28,6 +30,7 @@ const initialState: AppState = {
   savedRuleSets: [],
   storageError: null,
   patternErrorMessage: null,
+  matchResult: null,
 };
 
 // ─── State Manager ────────────────────────────────────────────────────────────
@@ -124,4 +127,8 @@ export function setStorageError(error: string | null): void {
 export function setPatternError(message: string | null): void {
   if (state.patternErrorMessage === message) return;
   setState({ patternErrorMessage: message });
+}
+
+export function setMatchResult(result: MatchResult | null): void {
+  setState({ matchResult: result });
 }

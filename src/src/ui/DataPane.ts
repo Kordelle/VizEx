@@ -1,4 +1,4 @@
-import { dispatch, subscribe, setPatternError } from '../state.js';
+import { dispatch, subscribe, setPatternError, setMatchResult } from '../state.js';
 import { resolveMatches } from '../engine/resolveMatches.js';
 import { buildViewportSpans } from '../engine/buildHighlightSpans.js';
 import { isPatternError } from '../types.js';
@@ -112,7 +112,7 @@ export function initDataPane(): void {
   subscribe((state) => {
     const input    = state.rawInput;
     const pattern  = state.pattern;
-    const flagsKey = `${pattern.flags.caseInsensitive}|${pattern.flags.multiline}|${pattern.flags.dotAll}`;
+    const flagsKey = `${pattern.flags.caseInsensitive}|${pattern.flags.multiline}|${pattern.flags.dotAll}|${pattern.flags.unicode}`;
 
     // No pattern — clear everything
     if (!pattern.raw) {
@@ -120,6 +120,7 @@ export function initDataPane(): void {
       cachedInput = input; cachedPattern = ''; cachedFlags = flagsKey; cachedSpans = [];
       if (changed) repaintHighlights();
       setPatternError(null);
+      setMatchResult(null);
       if (noMatches) noMatches.textContent = '';
       if (truncWarning) truncWarning.hidden = true;
       if (matchCount) matchCount.textContent = '';
@@ -138,6 +139,7 @@ export function initDataPane(): void {
       cachedInput = input; cachedPattern = pattern.raw; cachedFlags = flagsKey; cachedSpans = [];
       repaintHighlights();
       setPatternError(result.message);
+      setMatchResult(null);
       if (noMatches) noMatches.textContent = '';
       if (truncWarning) truncWarning.hidden = true;
       if (matchCount) matchCount.textContent = '';
@@ -150,6 +152,7 @@ export function initDataPane(): void {
     cachedPattern = pattern.raw;
     cachedFlags   = flagsKey;
     cachedSpans   = result.spans;
+    setMatchResult(result);
 
     repaintHighlights();
 

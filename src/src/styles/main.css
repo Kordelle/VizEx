@@ -573,7 +573,8 @@ html, body {
 
 /* ─── Theme Toggle (inside header) ───────────────────────────────────────── */
 #theme-toggle,
-#btn-export {
+#btn-export,
+#btn-copy-link {
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 500;
@@ -587,7 +588,8 @@ html, body {
   box-shadow: var(--shadow-sm);
 }
 #theme-toggle:hover,
-#btn-export:hover { background: var(--bg-hover); box-shadow: var(--shadow-md); }
+#btn-export:hover,
+#btn-copy-link:hover { background: var(--bg-hover); box-shadow: var(--shadow-md); }
 
 .header-link {
   display: inline-flex;
@@ -917,3 +919,65 @@ html, body {
   font-weight: 500;
   color: var(--text-subtle);
 }
+
+/* ─── Match Details Panel ────────────────────────────────────────────────── */
+#match-details-panel {
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+  overflow-y: auto;
+  max-height: 280px;
+}
+
+.mdet-empty {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: var(--sp-2);
+  margin: 0;
+}
+
+.mdet-error { color: var(--error-color); }
+
+.mdet-overflow {
+  font-size: 10px;
+  color: var(--text-subtle);
+  padding: var(--sp-1) var(--sp-2);
+  margin: 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.mdet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.mdet-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-toolbar);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 4px var(--sp-2);
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.mdet-match-row { background: var(--bg-surface); }
+.mdet-match-row:nth-child(even) { background: var(--bg-input); }
+.mdet-group-row { background: var(--bg-toolbar); }
+
+.mdet-table td {
+  padding: 3px var(--sp-2);
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text);
+}
+
+.mdet-idx { color: var(--text-muted); white-space: nowrap; }
+.mdet-val code { color: var(--accent); word-break: break-all; }
+.mdet-pos { white-space: nowrap; color: var(--text-subtle); }
+.mdet-len { white-space: nowrap; color: var(--text-subtle); }

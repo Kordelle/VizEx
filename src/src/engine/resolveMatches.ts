@@ -8,6 +8,7 @@ function buildFlagsString(pattern: RegexPattern): string {
   if (pattern.flags.caseInsensitive) f += 'i';
   if (pattern.flags.multiline) f += 'm';
   if (pattern.flags.dotAll) f += 's';
+  if (pattern.flags.unicode) f += 'u';
   return f;
 }
 

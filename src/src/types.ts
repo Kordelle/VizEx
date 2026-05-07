@@ -4,6 +4,7 @@ export interface RegexFlags {
   caseInsensitive: boolean; // i flag
   multiline: boolean;       // m flag — ^ and $ match per line
   dotAll: boolean;          // s flag — . matches \n
+  unicode: boolean;         // u flag — full Unicode mode
 }
 
 export interface RegexPattern {
