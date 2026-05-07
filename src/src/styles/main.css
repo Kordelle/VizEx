@@ -678,7 +678,7 @@ html, body {
 .examples-search::-webkit-search-cancel-button { display: none; }
 
 .examples-body {
-  max-height: 160px;
+  max-height: 170px;
   overflow-y: auto;
   padding: var(--sp-1) 0;
 }
