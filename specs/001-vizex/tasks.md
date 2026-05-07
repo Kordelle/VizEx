@@ -220,7 +220,7 @@
 
 ## Phase 15: Docs Catch-up (post-Phase 14)
 
-- [ ] T125 Update plan.md — add Phase 14 modules to project structure
+- [ ] T125 Update plan.md — add Phase 14–16 modules to project structure
 - [ ] T126 Update ui-contract.md — add MatchDetailsPanel + permalink contracts
 - [ ] T127 Update quickstart.md — add Vercel deploy steps
 
@@ -242,3 +242,13 @@
 - [x] T134 Add Prev / Next buttons to data pane toolbar in index.html
 - [x] T135 Implement match navigation in DataPane.ts — track active match index, scroll caret to match start, highlight active match with distinct CSS class
 - [x] T136 Add .mark-active CSS to main.css for the focused match highlight
+
+---
+
+## Phase 17: SEO
+
+- [x] T137 Keyword-optimised title + meta description targeting "free online regex tester / visualizer" (SEO-A)
+- [x] T138 Add `<meta name="keywords">` (SEO-A)
+- [x] T139 Add `<link rel="canonical" href="https://vizex.vercel.app/">` (SEO-C)
+- [x] T140 Add WebApplication JSON-LD structured data schema to index.html (SEO-D)
+- [ ] T141 Add og:image screenshot — defer until deployed; generate 1200×630 screenshot of VizEx and add `<meta property="og:image">` pointing to Vercel-hosted asset (SEO-B)

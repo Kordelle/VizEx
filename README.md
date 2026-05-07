@@ -1,8 +1,8 @@
-# VizEx
+# ![VizEx](src/public/favicon.svg) VizEx
 
 **Regex Data Quality Visualizer** — paste raw data, write a regex, see live match highlights and data quality rule results instantly.
 
-![VizEx](src/public/favicon.svg)
+
 
 ---
 
