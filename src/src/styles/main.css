@@ -626,8 +626,32 @@ html, body {
   border: 1px solid var(--border-color);
 }
 
+.examples-search-wrap {
+  padding: var(--sp-1) var(--sp-2);
+  background: var(--bg-toolbar);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.examples-search {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  padding: 4px 8px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.examples-search::placeholder { color: var(--text-subtle); }
+.examples-search:focus { border-color: var(--accent); }
+/* hide the native ✕ in webkit to keep it clean */
+.examples-search::-webkit-search-cancel-button { display: none; }
+
 .examples-body {
-  max-height: 360px;
+  max-height: 340px;
   overflow-y: auto;
   padding: var(--sp-1) 0;
 }

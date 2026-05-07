@@ -49,11 +49,10 @@ with no server required.
 ```powershell
 npm run test         # Vitest unit tests (watch mode)
 npm run test:run     # Vitest unit tests (single pass, CI mode)
-npm run test:e2e     # Playwright integration/visual tests
 ```
 
-> **Constitution III**: Tests MUST be written and confirmed failing before
-> implementation. Run `npm run test:run` after writing each test to verify it fails.
+> Unit tests cover `resolveMatches`, `evaluateRule`, and `ruleSetStorage`.
+> Playwright e2e tests are planned but not yet implemented.
 
 ---
 
@@ -63,30 +62,28 @@ npm run test:e2e     # Playwright integration/visual tests
 src/
 ├── index.html
 ├── src/
-│   ├── main.ts               # Entry point, mounts app
+│   ├── main.ts               # Entry point, mounts all panels
 │   ├── state.ts              # Central reactive state manager
 │   ├── types.ts              # All TypeScript interfaces (data model)
 │   ├── engine/
-│   │   ├── resolveMatches.ts # Regex evaluation + overlap resolution
-│   │   └── evaluateRule.ts   # DQ rule pass/fail logic
+│   │   ├── resolveMatches.ts       # Regex evaluation + overlap resolution
+│   │   ├── evaluateRule.ts         # DQ rule pass/fail logic
+│   │   ├── buildHighlightSpans.ts  # Viewport-aware highlight span builder
+│   │   └── matchWorker.ts          # Web worker for off-thread evaluation
 │   ├── storage/
-│   │   └── ruleSetStorage.ts # localStorage read/write
+│   │   └── ruleSetStorage.ts       # localStorage read/write
 │   ├── ui/
-│   │   ├── RegexInputPanel.ts  # Top pane + flag toggles
-│   │   ├── DataPane.ts         # Bottom pane + highlight rendering
-│   │   └── DQRulesPanel.ts     # Right sidebar + rule set management
+│   │   ├── RegexInputPanel.ts      # Pattern input + flag toggles
+│   │   ├── DataPane.ts             # Data editor + highlight rendering
+│   │   ├── DQRulesPanel.ts         # DQ rules sidebar
+│   │   ├── ExamplesPanel.ts        # Example patterns library with search
+│   │   ├── RegexQuickRef.ts        # Collapsible token cheat sheet
+│   │   └── InputStatsPanel.ts      # Live input statistics
+│   ├── examples/
+│   │   └── examples.ts             # Built-in pattern library
 │   └── styles/
-│       ├── main.css
-│       └── palette.css        # WCAG color palette custom properties
-tests/
-├── unit/
-│   ├── resolveMatches.test.ts
-│   ├── evaluateRule.test.ts
-│   └── ruleSetStorage.test.ts
-└── e2e/
-    ├── highlight.spec.ts      # P1 user story visual tests
-    ├── dq-rules.spec.ts       # P2 user story integration tests
-    └── rule-sets.spec.ts      # P3 user story integration tests
+│       ├── main.css                # Layout + full design system
+│       └── palette.css             # WCAG color palette custom properties
 ```
 
 ---
@@ -94,10 +91,10 @@ tests/
 ## Validation Checklist (run after implementation)
 
 - [ ] `npm run test:run` — all unit tests pass
-- [ ] `npm run test:e2e` — all Playwright tests pass
 - [ ] Open `dist/index.html` directly in browser (no server) — app loads
 - [ ] Paste a 50,000+ char string — performance warning appears, highlights still render
 - [ ] Toggle `i`, `m`, `s` flags — highlights update correctly
-- [ ] Save a rule set, refresh page, reload rule set — rules restored correctly
-- [ ] Open browser DevTools → Application → Local Storage — rule sets visible
 - [ ] Test in Chrome, Firefox, Edge — consistent rendering
+- [ ] Search bar in Examples panel filters live by name and pattern
+- [ ] QuickRef token chips insert at cursor in pattern input
+- [ ] Input Stats panel updates on every keystroke
