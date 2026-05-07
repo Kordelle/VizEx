@@ -30,10 +30,11 @@ export function initRegexInputPanel(): void {
     const flag = btn.dataset['flag'] as 'caseInsensitive' | 'multiline' | 'dotAll' | undefined;
     if (!flag) return;
 
-    const flagMap: Record<string, 'caseInsensitive' | 'multiline' | 'dotAll'> = {
+    const flagMap: Record<string, 'caseInsensitive' | 'multiline' | 'dotAll' | 'unicode'> = {
       i: 'caseInsensitive',
       m: 'multiline',
       s: 'dotAll',
+      u: 'unicode',
     };
     const stateFlag = flagMap[flag];
     if (!stateFlag) return;
@@ -52,6 +53,7 @@ export function initRegexInputPanel(): void {
         i: 'caseInsensitive',
         m: 'multiline',
         s: 'dotAll',
+        u: 'unicode',
       };
       if (!flagKey) return;
       const stateKey = flagMap[flagKey];
