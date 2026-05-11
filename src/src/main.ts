@@ -1,5 +1,6 @@
 import './styles/main.css';
 import './styles/palette.css';
+import { inject } from '@vercel/analytics';
 import { subscribe } from './state.js';
 import { initRegexInputPanel } from './ui/RegexInputPanel.js';
 import { initDataPane } from './ui/DataPane.js';
@@ -9,6 +10,9 @@ import { initRegexQuickRef } from './ui/RegexQuickRef.js';
 import { initInputStatsPanel } from './ui/InputStatsPanel.js';
 import { initMatchDetailsPanel } from './ui/MatchDetailsPanel.js';
 import { initSubstitutionPanel } from './ui/SubstitutionPanel.js';
+
+// ─── Vercel Analytics ─────────────────────────────────────────────────────────
+inject();
 
 // ─── Theme Toggle ─────────────────────────────────────────────────────────────
 const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
